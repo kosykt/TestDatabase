@@ -1,6 +1,8 @@
 package ru.kostry.testdatabase.db
 
 import androidx.room.TypeConverter
+import ru.kostry.testdatabase.db.persons.DayOffEntityModel
+import ru.kostry.testdatabase.db.persons.PathDirectionEntityModel
 import java.util.stream.Collectors
 
 class PersonTypeConverter {

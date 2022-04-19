@@ -1,16 +1,18 @@
-package ru.kostry.testdatabase.db
+package ru.kostry.testdatabase.db.persons
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
 data class PersonEntity(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    var trainNumber: Int = 0,
+    var readyToRide: Boolean,
     val firstName: String,
     val secondName: String,
     val thirdName: String,
-    val hoursWorked: Int,
+    var hoursWorked: Int,
     val daysOff: List<DayOffEntityModel>,
     val pathDirections: List<PathDirectionEntityModel>,
 )
