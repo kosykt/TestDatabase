@@ -1,4 +1,4 @@
-package ru.kostry.testdatabase.db.model
+package ru.kostry.testdatabase.db.exaples.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

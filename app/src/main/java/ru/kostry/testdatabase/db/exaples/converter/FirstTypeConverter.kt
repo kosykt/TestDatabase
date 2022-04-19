@@ -1,4 +1,4 @@
-package ru.kostry.testdatabase.db.converter
+package ru.kostry.testdatabase.db.exaples.converter
 
 import androidx.room.TypeConverter
 import java.util.stream.Collectors

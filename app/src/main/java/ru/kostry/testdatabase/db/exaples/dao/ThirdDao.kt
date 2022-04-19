@@ -1,7 +1,7 @@
-package ru.kostry.testdatabase.db.dao
+package ru.kostry.testdatabase.db.exaples.dao
 
 import androidx.room.*
-import ru.kostry.testdatabase.db.model.ThirdEntity
+import ru.kostry.testdatabase.db.exaples.model.ThirdEntity
 
 @Dao
 interface ThirdDao {

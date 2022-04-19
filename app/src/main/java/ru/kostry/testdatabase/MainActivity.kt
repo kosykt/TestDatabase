@@ -7,7 +7,10 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.kostry.testdatabase.db.AppDatabase
-import ru.kostry.testdatabase.db.model.*
+import ru.kostry.testdatabase.db.DayOffEntityModel
+import ru.kostry.testdatabase.db.PathDirectionEntityModel
+import ru.kostry.testdatabase.db.PersonEntity
+import ru.kostry.testdatabase.db.exaples.model.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +30,21 @@ class MainActivity : AppCompatActivity() {
             MyPackage("package_1"),
             MyPackage("package_2")
         )
+    )
+    private val personEntity = PersonEntity(
+        id = 1,
+        firstName = "firstName",
+        secondName = "secondName",
+        thirdName = "thirdName",
+        hoursWorked = 111,
+        daysOff = listOf(
+            DayOffEntityModel(day = 1, month = 1, year = 2001),
+            DayOffEntityModel(day = 2, month = 2, year = 2002),
+        ),
+        pathDirections = listOf(
+            PathDirectionEntityModel(destination = "Moscow", permission = true),
+            PathDirectionEntityModel(destination = "Saint Petersburg", permission = false),
+        ),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +66,10 @@ class MainActivity : AppCompatActivity() {
             db.instance.thirdDao.insert(thirdEntity)
             val c = db.instance.thirdDao.getAll()
             Log.d("testRoom_thirdEntity", c[0].myPackages[1].text)
+
+            db.instance.personDao.insert(personEntity)
+            val e = db.instance.personDao.getAll()
+            Log.d("testRoom_personEntity", e[0].pathDirections[0].destination)
         }
     }
 }

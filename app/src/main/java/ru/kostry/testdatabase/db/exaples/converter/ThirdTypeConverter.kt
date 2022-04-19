@@ -1,7 +1,7 @@
-package ru.kostry.testdatabase.db.converter
+package ru.kostry.testdatabase.db.exaples.converter
 
 import androidx.room.TypeConverter
-import ru.kostry.testdatabase.db.model.MyPackage
+import ru.kostry.testdatabase.db.exaples.model.MyPackage
 import java.util.stream.Collectors
 
 class ThirdTypeConverter {
