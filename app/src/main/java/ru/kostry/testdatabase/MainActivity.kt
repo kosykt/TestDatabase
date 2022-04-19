@@ -74,16 +74,19 @@ class MainActivity : AppCompatActivity() {
 
     private val train1 = TrainEntity(
         number = 1,
+        destination = "Sochi",
         workingHours = 1,
         isBusy = false
     )
     private val train2 = TrainEntity(
         number = 2,
+        destination = "Saint Petersburg",
         workingHours = 5,
         isBusy = false
     )
     private val train3 = TrainEntity(
         number = 3,
+        destination = "Moscow",
         workingHours = 10,
         isBusy = false
     )
@@ -104,10 +107,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun distribution(persons: List<PersonEntity>, trains: List<TrainEntity>) {
         for (i in persons.indices) {
-            persons[i].readyToRide = false
-            persons[i].trainNumber += trains[i].number
-            persons[i].hoursWorked += trains[i].workingHours
-            trains[i].isBusy = true
+            persons[i].pathDirections.forEach {
+                if (it.destination == trains[i].destination && it.permission) {
+                    persons[i].readyToRide = false
+                    persons[i].trainNumber += trains[i].number
+                    persons[i].hoursWorked += trains[i].workingHours
+                    trains[i].isBusy = true
+                }
+            }
         }
         db.instance.personDao.insert(persons)
         db.instance.trainDao.insert(trains)

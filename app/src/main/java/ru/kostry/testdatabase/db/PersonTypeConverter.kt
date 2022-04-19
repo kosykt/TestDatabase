@@ -9,7 +9,7 @@ class PersonTypeConverter {
 
     @TypeConverter
     fun toDaysOff(days: String): List<DayOffEntityModel> {
-        val listString: List<String> = days.split(", ")
+        val listString: List<String> = days.split(",")
         val daysOff: MutableList<DayOffEntityModel> = mutableListOf()
         listString.forEach {
             val splitDate = getSplitDate(it)
@@ -30,7 +30,7 @@ class PersonTypeConverter {
     fun fromDaysOff(daysOff: List<DayOffEntityModel>): String {
         return daysOff.stream()
             .map { "${it.day}.${it.month}.${it.year}" }
-            .collect(Collectors.joining(", "))
+            .collect(Collectors.joining(","))
     }
 
     @TypeConverter
@@ -54,7 +54,7 @@ class PersonTypeConverter {
     @TypeConverter
     fun fromPathDirections(pathDirections: List<PathDirectionEntityModel>): String {
         return pathDirections.stream()
-            .map { "${it.destination} = ${it.permission}" }
+            .map { "${it.destination}=${it.permission}" }
             .collect(Collectors.joining(","))
     }
 }

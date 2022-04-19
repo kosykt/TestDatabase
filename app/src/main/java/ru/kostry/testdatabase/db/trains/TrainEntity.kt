@@ -8,6 +8,7 @@ data class TrainEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val number: Int,
+    val destination: String,
     val workingHours: Int,
     var isBusy: Boolean,
 )
