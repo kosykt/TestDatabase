@@ -6,7 +6,6 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.kostry.testdatabase.db.AppDatabase
-import ru.kostry.testdatabase.db.persons.PathDirectionEntityModel
 import ru.kostry.testdatabase.db.persons.PersonEntity
 import ru.kostry.testdatabase.db.trains.TrainEntity
 import java.util.*
@@ -27,17 +26,15 @@ class MainActivity : AppCompatActivity() {
             GregorianCalendar(2022, Calendar.APRIL, 24),
         ),
         pathDirections = listOf(
-            PathDirectionEntityModel(destination = "Moscow", permission = true),
-            PathDirectionEntityModel(destination = "Saint Petersburg", permission = true),
-            PathDirectionEntityModel(destination = "Sochi", permission = true),
-            PathDirectionEntityModel(destination = "Omsk", permission = false),
+            mapOf("Moscow" to true),
+            mapOf("Saint-Petersburg" to true),
         ),
     )
 
     private val train1 = TrainEntity(
         id = 1,
         number = 1,
-        destination = "Sochi",
+        destination = "Moscow",
         date = GregorianCalendar(2022, Calendar.APRIL, 20, 18, 30),
         workingHours = 1,
         isBusy = false
@@ -49,8 +46,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             db.instance.personDao.insert(person1)
             db.instance.trainDao.insert(train1)
-            val respTrain = db.instance.trainDao.getAll()
-            val respPers = db.instance.personDao.getAll()
         }
     }
 }

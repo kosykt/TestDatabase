@@ -15,10 +15,5 @@ data class PersonEntity(
     val thirdName: String,
     var hoursWorked: Int,
     val daysOff: List<GregorianCalendar>,
-    val pathDirections: List<PathDirectionEntityModel>,
-)
-
-data class PathDirectionEntityModel(
-    val destination: String,
-    val permission: Boolean,
+    val pathDirections: List<Map<String, Boolean>>,
 )

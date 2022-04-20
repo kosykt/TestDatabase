@@ -19,7 +19,7 @@ import ru.kostry.testdatabase.db.trains.TrainEntity
     exportSchema = false
 )
 @TypeConverters(
-    PersonTypeConverter::class,
+    DatabaseTypeConverter::class,
 )
 abstract class AppDatabase : RoomDatabase() {
 
