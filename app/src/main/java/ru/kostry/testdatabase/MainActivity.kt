@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         id = 3,
         number = 3,
         destination = "Sochi",
-        date = GregorianCalendar(2022, Calendar.APRIL, 26, 18, 30),
+        date = GregorianCalendar(2022, Calendar.APRIL, 25, 18, 30),
         workingHours = 30,
         isBusy = false
     )
@@ -130,9 +130,9 @@ class MainActivity : AppCompatActivity() {
     ): Boolean {
         daysOff.forEach { gregorianCalendar ->
             if (gregorianCalendar.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)) {
-                return true
+                return false
             }
         }
-        return false
+        return true
     }
 }
