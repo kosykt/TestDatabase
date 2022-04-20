@@ -1,7 +1,6 @@
 package ru.kostry.testdatabase
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
@@ -90,8 +89,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startSorting(trains: MutableList<TrainEntity>, persons: MutableList<PersonEntity>) {
         trains.forEach { trainEntity ->
-            if (trainEntity.isBusy) {
-            } else {
+            if (!trainEntity.isBusy) {
                 persons.forEach { personEntity ->
                     if (personEntity.readyToRide) {
                         if (checkCanRide(personEntity, trainEntity)) {
@@ -99,13 +97,13 @@ class MainActivity : AppCompatActivity() {
                             personEntity.hoursWorked += trainEntity.workingHours
                             personEntity.trainNumber = trainEntity.number
                             trainEntity.isBusy = true
-                            db.instance.personDao.insert(personEntity)
-                            db.instance.trainDao.insert(trainEntity)
                         }
                     }
                 }
             }
         }
+        db.instance.personDao.insert(persons)
+        db.instance.trainDao.insert(trains)
     }
 
     private fun checkCanRide(personEntity: PersonEntity, trainEntity: TrainEntity): Boolean {
