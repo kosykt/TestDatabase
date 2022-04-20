@@ -1,6 +1,7 @@
 package ru.kostry.testdatabase
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
@@ -31,12 +32,12 @@ class MainActivity : AppCompatActivity() {
         ),
     )
     private val person2 = PersonEntity(
-        id = 1,
+        id = 2,
         readyToRide = true,
         firstName = "Petr",
         secondName = "Petrov",
         thirdName = "Petrovich",
-        hoursWorked = 0,
+        hoursWorked = 5,
         daysOff = listOf(
             GregorianCalendar(2022, Calendar.APRIL, 22),
             GregorianCalendar(2022, Calendar.APRIL, 24),
@@ -79,10 +80,61 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         lifecycleScope.launch(Dispatchers.IO) {
-            db.instance.personDao.insert(person1)
+            db.instance.personDao.insert(listOf(person1, person2))
             db.instance.trainDao.insert(listOf(train1, train2, train3))
-            val trains = db.instance.trainDao.getNotBusyOrderedByHoursDesc()
-            val persons = db.instance.personDao.getReadyOrderedByHoursAsc()
+            val trains = db.instance.trainDao.getNotBusyOrderedByHoursDesc().toMutableList()
+            val persons = db.instance.personDao.getReadyOrderedByHoursAsc().toMutableList()
+            startSorting(trains, persons)
         }
+    }
+
+    private fun startSorting(trains: MutableList<TrainEntity>, persons: MutableList<PersonEntity>) {
+        trains.forEach { trainEntity ->
+            if (trainEntity.isBusy) {
+            } else {
+                persons.forEach { personEntity ->
+                    if (personEntity.readyToRide) {
+                        if (checkCanRide(personEntity, trainEntity)) {
+                            personEntity.readyToRide = false
+                            personEntity.hoursWorked += trainEntity.workingHours
+                            personEntity.trainNumber = trainEntity.number
+                            trainEntity.isBusy = true
+                            db.instance.personDao.insert(personEntity)
+                            db.instance.trainDao.insert(trainEntity)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkCanRide(personEntity: PersonEntity, trainEntity: TrainEntity): Boolean {
+        val path = checkCanPersonRideToPathway(personEntity.pathDirections, trainEntity.destination)
+        val date = checkPersonDayOffAndTrainDate(personEntity.daysOff, trainEntity.date)
+        return path && date
+    }
+
+    private fun checkCanPersonRideToPathway(
+        pathDirections: List<Map<String, Boolean>>,
+        destination: String,
+    ): Boolean {
+        pathDirections.forEach { map ->
+            if (map.containsKey(destination) && map[destination] == true) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun checkPersonDayOffAndTrainDate(
+        daysOff: List<GregorianCalendar>,
+        date: GregorianCalendar,
+    ): Boolean {
+        daysOff.forEach { gregorianCalendar ->
+            if (gregorianCalendar.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)) {
+                return true
+            }
+        }
+        return false
     }
 }
