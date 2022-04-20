@@ -30,13 +30,48 @@ class MainActivity : AppCompatActivity() {
             mapOf("Saint-Petersburg" to true),
         ),
     )
+    private val person2 = PersonEntity(
+        id = 1,
+        readyToRide = true,
+        firstName = "Petr",
+        secondName = "Petrov",
+        thirdName = "Petrovich",
+        hoursWorked = 0,
+        daysOff = listOf(
+            GregorianCalendar(2022, Calendar.APRIL, 22),
+            GregorianCalendar(2022, Calendar.APRIL, 24),
+            GregorianCalendar(2022, Calendar.APRIL, 26),
+        ),
+        pathDirections = listOf(
+            mapOf("Sochi" to true),
+            mapOf("Saint-Petersburg" to false),
+        ),
+    )
 
     private val train1 = TrainEntity(
         id = 1,
         number = 1,
         destination = "Moscow",
         date = GregorianCalendar(2022, Calendar.APRIL, 20, 18, 30),
-        workingHours = 1,
+        workingHours = 10,
+        isBusy = false
+    )
+
+    private val train2 = TrainEntity(
+        id = 2,
+        number = 2,
+        destination = "Saint-Petersburg",
+        date = GregorianCalendar(2022, Calendar.APRIL, 24, 18, 30),
+        workingHours = 20,
+        isBusy = false
+    )
+
+    private val train3 = TrainEntity(
+        id = 3,
+        number = 3,
+        destination = "Sochi",
+        date = GregorianCalendar(2022, Calendar.APRIL, 26, 18, 30),
+        workingHours = 30,
         isBusy = false
     )
 
@@ -45,7 +80,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         lifecycleScope.launch(Dispatchers.IO) {
             db.instance.personDao.insert(person1)
-            db.instance.trainDao.insert(train1)
+            db.instance.trainDao.insert(listOf(train1, train2, train3))
+            val trains = db.instance.trainDao.getNotBusyOrderedByHoursDesc()
+            val persons = db.instance.personDao.getReadyOrderedByHoursAsc()
         }
     }
 }
