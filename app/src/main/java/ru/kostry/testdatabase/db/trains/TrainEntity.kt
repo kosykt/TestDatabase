@@ -10,12 +10,12 @@ data class TrainEntity(
     val id: Int = 0,
     val number: Int,
     val checkOuts: List<TrainCheckOutEntity>,
-    val destination: String,
-    val workingHours: Int,
-    var isBusy: Boolean,
 )
 
 data class TrainCheckOutEntity(
     val time: GregorianCalendar,
+    val destination: String,
+    val workingHours: Int,
     val personEntityId: Int = 0,
+    var isBusy: Boolean = false,
 )

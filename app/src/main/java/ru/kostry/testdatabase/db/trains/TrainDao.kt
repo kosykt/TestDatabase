@@ -19,7 +19,4 @@ interface TrainDao {
 
     @Query("SELECT * FROM TrainEntity")
     fun getAll(): List<TrainEntity>
-
-    @Query("SELECT * FROM TrainEntity WHERE isBusy = 0 ORDER BY workingHours DESC")
-    fun getNotBusyOrderedByHoursDesc(): List<TrainEntity>
 }

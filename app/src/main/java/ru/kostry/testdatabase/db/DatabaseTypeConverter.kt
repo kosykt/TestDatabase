@@ -72,15 +72,26 @@ class DatabaseTypeConverter {
         splitList.forEach { str ->
             val subList: List<String> = str.split("=")
             val gregorianCalendar = toGregorianCalendar(subList[0])
-            returnedData.add(TrainCheckOutEntity(gregorianCalendar, subList[1].toInt()))
+            returnedData.add(
+                TrainCheckOutEntity(
+                    time = gregorianCalendar,
+                    destination = subList[1],
+                    workingHours = subList[2].toInt(),
+                    personEntityId = subList[3].toInt(),
+                    isBusy = subList[4].toBoolean(),
+                )
+            )
         }
         return returnedData
     }
 
     @TypeConverter
     fun fromListTrainCheckOutEntity(checkOuts: List<TrainCheckOutEntity>): String {
-         return checkOuts.stream()
-            .map { "${fromGregorianCalendar(it.time)}=${it.personEntityId}" }
+        return checkOuts
+            .stream()
+            .map {
+                "${fromGregorianCalendar(it.time)}=${it.destination}=${it.workingHours}=${it.personEntityId}=${it.isBusy}"
+            }
             .collect(Collectors.joining("/"))
     }
 }

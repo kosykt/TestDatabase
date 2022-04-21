@@ -35,27 +35,41 @@ class MainActivity : AppCompatActivity() {
     private val train1 = TrainEntity(
         id = 1,
         number = 1,
-        destination = "Moscow",
         checkOuts = listOf(
             TrainCheckOutEntity(
-                time = GregorianCalendar(2022, Calendar.APRIL, 24, 18, 30)
+                time = GregorianCalendar(2022, Calendar.APRIL, 24, 18, 30),
+                destination = "Moscow",
+                workingHours = 10,
             )
         ),
-        workingHours = 10,
-        isBusy = false
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         lifecycleScope.launch(Dispatchers.IO) {
-            db.instance.personDao.insert(listOf(person1, ))
-            db.instance.trainDao.insert(listOf(train1, ))
-            val trains = db.instance.trainDao.getNotBusyOrderedByHoursDesc().toMutableList()
+            db.instance.personDao.insert(listOf(person1))
+            db.instance.trainDao.insert(listOf(train1))
+            val trains = db.instance.trainDao.getAll().toMutableList()
             val persons = db.instance.personDao.getReadyOrderedByHoursAsc().toMutableList()
 //            startSorting(trains, persons)
         }
     }
+
+
+//    private fun startSorting(trains: MutableList<TrainEntity>, persons: MutableList<PersonEntity>) {
+//        trains.forEach { trainEntity ->
+//            trainEntity.checkOuts.forEach { checkOut ->
+//                if (!checkOut.isBusy && checkOut.personEntityId == 0) {
+//                    persons.forEach { personEntity ->
+//                        if (personEntity.readyToRide) {
+//                            if (checkCanRide(personEntity, checkOut))
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 //    private fun startSorting(trains: MutableList<TrainEntity>, persons: MutableList<PersonEntity>) {
 //        trains.forEach { trainEntity ->
@@ -76,12 +90,12 @@ class MainActivity : AppCompatActivity() {
 //        db.instance.trainDao.insert(trains)
 //    }
 //
-//    private fun checkCanRide(personEntity: PersonEntity, trainEntity: TrainEntity): Boolean {
-//        val path = checkCanPersonRideToPathway(personEntity.pathDirections, trainEntity.destination)
+//    private fun checkCanRide(personEntity: PersonEntity, checkOutEntity: TrainCheckOutEntity): Boolean {
+//        val path = checkCanPersonRideToPathway(personEntity.pathDirections, checkOutEntity.destination)
 //        if (path) {
 //            return false
 //        }
-//        val date = checkPersonDayOffAndTrainDate(personEntity.daysOff, trainEntity.date)
+//        val date = checkPersonDayOffAndTrainDate(personEntity.daysOff, checkOutEntity.date)
 //        return path && date
 //    }
 //
@@ -108,4 +122,5 @@ class MainActivity : AppCompatActivity() {
 //        }
 //        return true
 //    }
+
 }
