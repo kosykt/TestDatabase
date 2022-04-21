@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         id = 3,
         number = 3,
         destination = "Sochi",
-        date = GregorianCalendar(2022, Calendar.APRIL, 25, 18, 30),
+        date = GregorianCalendar(2022, Calendar.APRIL, 26, 18, 30),
         workingHours = 30,
         isBusy = false
     )
@@ -108,6 +108,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkCanRide(personEntity: PersonEntity, trainEntity: TrainEntity): Boolean {
         val path = checkCanPersonRideToPathway(personEntity.pathDirections, trainEntity.destination)
+        if (path) {
+            return false
+        }
         val date = checkPersonDayOffAndTrainDate(personEntity.daysOff, trainEntity.date)
         return path && date
     }
@@ -117,8 +120,8 @@ class MainActivity : AppCompatActivity() {
         destination: String,
     ): Boolean {
         pathDirections.forEach { map ->
-            if (map.containsKey(destination) && map[destination] == true) {
-                return true
+            if (map.containsKey(destination)) {
+                return map[destination] == true
             }
         }
         return false
