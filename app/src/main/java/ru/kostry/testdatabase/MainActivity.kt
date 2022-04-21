@@ -16,15 +16,12 @@ class MainActivity : AppCompatActivity() {
     private val db = AppDatabase
     private val person1 = PersonEntity(
         id = 1,
-        readyToRide = true,
         firstName = "Ivan",
         secondName = "Ivanov",
         thirdName = "Ivanovich",
         hoursWorked = 0,
         daysOff = listOf(
             GregorianCalendar(2022, Calendar.APRIL, 20),
-            GregorianCalendar(2022, Calendar.APRIL, 22),
-            GregorianCalendar(2022, Calendar.APRIL, 24),
         ),
         pathDirections = listOf(
             mapOf("Moscow" to true),
@@ -34,10 +31,10 @@ class MainActivity : AppCompatActivity() {
 
     private val train1 = TrainEntity(
         id = 1,
-        number = 1,
+        trainNumber = 1,
         checkOuts = listOf(
             TrainCheckOutEntity(
-                time = GregorianCalendar(2022, Calendar.APRIL, 24, 18, 30),
+                time = GregorianCalendar(2022, Calendar.APRIL, 21, 18, 30),
                 destination = "Moscow",
                 workingHours = 10,
             )
@@ -51,76 +48,61 @@ class MainActivity : AppCompatActivity() {
             db.instance.personDao.insert(listOf(person1))
             db.instance.trainDao.insert(listOf(train1))
             val trains = db.instance.trainDao.getAll().toMutableList()
-            val persons = db.instance.personDao.getReadyOrderedByHoursAsc().toMutableList()
-//            startSorting(trains, persons)
+            val persons = db.instance.personDao.getOrderedByHoursAsc().toMutableList()
+            startSorting(trains, persons)
         }
     }
 
 
-//    private fun startSorting(trains: MutableList<TrainEntity>, persons: MutableList<PersonEntity>) {
-//        trains.forEach { trainEntity ->
-//            trainEntity.checkOuts.forEach { checkOut ->
-//                if (!checkOut.isBusy && checkOut.personEntityId == 0) {
-//                    persons.forEach { personEntity ->
-//                        if (personEntity.readyToRide) {
-//                            if (checkCanRide(personEntity, checkOut))
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
+    private fun startSorting(trains: MutableList<TrainEntity>, persons: MutableList<PersonEntity>) {
+        trains.forEach { trainEntity ->
+            trainEntity.checkOuts.forEach { trainCheckOut ->
+                if (!trainCheckOut.isBusy && trainCheckOut.personEntityId == 0) {
+                    persons.forEach { personEntity ->
+                        if (checkCanRide(personEntity, trainCheckOut)) {
+                            trainCheckOut.personEntityId = personEntity.id
+                            trainCheckOut.isBusy = true
+                            personEntity.hoursWorked += trainCheckOut.workingHours
+                        }
+                    }
+                }
+            }
+        }
+        db.instance.personDao.insert(persons)
+        db.instance.trainDao.insert(trains)
+    }
 
-//    private fun startSorting(trains: MutableList<TrainEntity>, persons: MutableList<PersonEntity>) {
-//        trains.forEach { trainEntity ->
-//            if (!trainEntity.isBusy) {
-//                persons.forEach { personEntity ->
-//                    if (personEntity.readyToRide) {
-//                        if (checkCanRide(personEntity, trainEntity)) {
-//                            personEntity.readyToRide = false
-//                            personEntity.hoursWorked += trainEntity.workingHours
-//                            personEntity.trainNumber = trainEntity.number
-//                            trainEntity.isBusy = true
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        db.instance.personDao.insert(persons)
-//        db.instance.trainDao.insert(trains)
-//    }
-//
-//    private fun checkCanRide(personEntity: PersonEntity, checkOutEntity: TrainCheckOutEntity): Boolean {
-//        val path = checkCanPersonRideToPathway(personEntity.pathDirections, checkOutEntity.destination)
-//        if (path) {
-//            return false
-//        }
-//        val date = checkPersonDayOffAndTrainDate(personEntity.daysOff, checkOutEntity.date)
-//        return path && date
-//    }
-//
-//    private fun checkCanPersonRideToPathway(
-//        pathDirections: List<Map<String, Boolean>>,
-//        destination: String,
-//    ): Boolean {
-//        pathDirections.forEach { map ->
-//            if (map.containsKey(destination)) {
-//                return map[destination] == true
-//            }
-//        }
-//        return false
-//    }
-//
-//    private fun checkPersonDayOffAndTrainDate(
-//        daysOff: List<GregorianCalendar>,
-//        date: GregorianCalendar,
-//    ): Boolean {
-//        daysOff.forEach { gregorianCalendar ->
-//            if (gregorianCalendar.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)) {
-//                return false
-//            }
-//        }
-//        return true
-//    }
+    private fun checkCanRide(
+        person: PersonEntity,
+        checkOut: TrainCheckOutEntity,
+    ): Boolean {
+        val path = checkCanPersonRideToPathway(person.pathDirections, checkOut.destination)
+        if (!path) {
+            return false
+        }
+        val date = checkPersonDayOffAndTrainDate(person.daysOff, checkOut.time)
+        return path && date
+    }
 
+    private fun checkCanPersonRideToPathway(
+        pathDirections: List<Map<String, Boolean>>,
+        destination: String,
+    ): Boolean {
+        pathDirections.forEach { map ->
+            return (map.containsKey(destination)) && map[destination] == true
+        }
+        return false
+    }
+
+    private fun checkPersonDayOffAndTrainDate(
+        daysOff: List<GregorianCalendar>,
+        date: GregorianCalendar,
+    ): Boolean {
+        daysOff.forEach { gregorianCalendar ->
+            if (gregorianCalendar.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)) {
+                return false
+            }
+        }
+        return true
+    }
 }

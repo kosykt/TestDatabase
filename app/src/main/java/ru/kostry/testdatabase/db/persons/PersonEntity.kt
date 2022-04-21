@@ -8,7 +8,6 @@ import java.util.*
 data class PersonEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    var readyToRide: Boolean,
     val firstName: String,
     val secondName: String,
     val thirdName: String,
