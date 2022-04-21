@@ -6,8 +6,8 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.kostry.testdatabase.db.AppDatabase
+import ru.kostry.testdatabase.db.TimeInterval
 import ru.kostry.testdatabase.db.persons.PersonEntity
-import ru.kostry.testdatabase.db.trains.TrainCheckOutEntity
 import ru.kostry.testdatabase.db.trains.TrainEntity
 import java.util.*
 
@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
         firstName = "Ivan",
         secondName = "Ivanov",
         thirdName = "Ivanovich",
-        hoursWorked = 0,
         daysOff = listOf(
             GregorianCalendar(2022, Calendar.APRIL, 20),
         ),
@@ -31,29 +30,12 @@ class MainActivity : AppCompatActivity() {
 
     private val train1 = TrainEntity(
         id = 1,
-        trainNumber = 1,
-        checkOuts = listOf(
-            TrainCheckOutEntity(
-                time = GregorianCalendar(2022, Calendar.APRIL, 20, 18, 30),
-                destination = "Moscow",
-                workingHours = 5000,
-            ),
-            TrainCheckOutEntity(
-                time = GregorianCalendar(2022, Calendar.APRIL, 21, 18, 30),
-                destination = "Moscow",
-                workingHours = 100,
-            ),
-            TrainCheckOutEntity(
-                time = GregorianCalendar(2022, Calendar.APRIL, 22, 18, 30),
-                destination = "Saint-Petersburg",
-                workingHours = 50,
-            ),
-            TrainCheckOutEntity(
-                time = GregorianCalendar(2022, Calendar.APRIL, 23, 18, 30),
-                destination = "Sochi",
-                workingHours = 10,
-            )
-        ),
+        routeNumber = "123A",
+        destination = "Moscow",
+        time = TimeInterval(
+            GregorianCalendar(2022, Calendar.APRIL, 20, 8,30),
+            GregorianCalendar(2022, Calendar.APRIL, 20, 17, 30),
+        )
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,63 +45,58 @@ class MainActivity : AppCompatActivity() {
             db.instance.personDao.insert(listOf(person1))
             db.instance.trainDao.insert(listOf(train1))
             val trains = db.instance.trainDao.getAll().toMutableList()
-            val persons = db.instance.personDao.getOrderedByHoursAsc().toMutableList()
-            startSorting(trains, persons)
+            val persons = db.instance.personDao.getAll().toMutableList()
+//            startSorting(trains, persons)
         }
     }
 
 
-    private fun startSorting(trains: MutableList<TrainEntity>, persons: MutableList<PersonEntity>) {
-        trains.forEach { trainEntity ->
-            trainEntity.checkOuts.forEach { trainCheckOut ->
-                if (!trainCheckOut.isBusy && trainCheckOut.personEntityId == 0) {
-                    persons.forEach { personEntity ->
-                        if (checkCanRide(personEntity, trainCheckOut)) {
-                            trainCheckOut.personEntityId = personEntity.id
-                            trainCheckOut.isBusy = true
-                            personEntity.hoursWorked += trainCheckOut.workingHours
-                        }
-                    }
-                }
-            }
-        }
-        db.instance.personDao.insert(persons)
-        db.instance.trainDao.insert(trains)
-    }
-
-    private fun checkCanRide(
-        person: PersonEntity,
-        checkOut: TrainCheckOutEntity,
-    ): Boolean {
-        val path = checkCanPersonRideToPathway(person.pathDirections, checkOut.destination)
-        if (!path) {
-            return false
-        }
-        val date = checkPersonDayOffAndTrainDate(person.daysOff, checkOut.time)
-        return path && date
-    }
-
-    private fun checkCanPersonRideToPathway(
-        pathDirections: List<Map<String, Boolean>>,
-        destination: String,
-    ): Boolean {
-        pathDirections.forEach { map ->
-            if ((map.containsKey(destination)) && map[destination] == true) {
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun checkPersonDayOffAndTrainDate(
-        daysOff: List<GregorianCalendar>,
-        date: GregorianCalendar,
-    ): Boolean {
-        daysOff.forEach { gregorianCalendar ->
-            if (gregorianCalendar.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)) {
-                return false
-            }
-        }
-        return true
-    }
+//    private fun startSorting(trains: MutableList<TrainEntity>, persons: MutableList<PersonEntity>) {
+//        trains.forEach { trainEntity ->
+//            trainEntity.checkOuts.forEach { trainCheckOut ->
+//                persons.forEach { personEntity ->
+//                    if (checkCanRide(personEntity, trainCheckOut)) {
+//
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
+//
+//    private fun checkCanRide(
+//        person: PersonEntity,
+//        checkOut: TrainCheckOutEntity,
+//    ): Boolean {
+//        val path = checkCanPersonRideToPathway(person.pathDirections, checkOut.destination)
+//        if (!path) {
+//            return false
+//        }
+//        val date = checkPersonDayOffAndTrainDate(person.daysOff, checkOut.time)
+//        return path && date
+//    }
+//
+//    private fun checkCanPersonRideToPathway(
+//        pathDirections: List<Map<String, Boolean>>,
+//        destination: String,
+//    ): Boolean {
+//        pathDirections.forEach { map ->
+//            if ((map.containsKey(destination)) && map[destination] == true) {
+//                return true
+//            }
+//        }
+//        return false
+//    }
+//
+//    private fun checkPersonDayOffAndTrainDate(
+//        daysOff: List<GregorianCalendar>,
+//        date: GregorianCalendar,
+//    ): Boolean {
+//        daysOff.forEach { gregorianCalendar ->
+//            if (gregorianCalendar.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)) {
+//                return false
+//            }
+//        }
+//        return true
+//    }
 }

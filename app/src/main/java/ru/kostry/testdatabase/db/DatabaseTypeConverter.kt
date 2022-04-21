@@ -1,7 +1,6 @@
 package ru.kostry.testdatabase.db
 
 import androidx.room.TypeConverter
-import ru.kostry.testdatabase.db.trains.TrainCheckOutEntity
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.streams.toList
@@ -63,35 +62,5 @@ class DatabaseTypeConverter {
                 "${gregorianCalendar.get(Calendar.DAY_OF_MONTH)}," +
                 "${gregorianCalendar.get(Calendar.HOUR_OF_DAY)}," +
                 "${gregorianCalendar.get(Calendar.MINUTE)}"
-    }
-
-    @TypeConverter
-    fun toListTrainCheckOutEntity(text: String): MutableList<TrainCheckOutEntity> {
-        val splitList: List<String> = text.split("/")
-        val returnedData: MutableList<TrainCheckOutEntity> = mutableListOf()
-        splitList.forEach { str ->
-            val subList: List<String> = str.split("=")
-            val gregorianCalendar = toGregorianCalendar(subList[0])
-            returnedData.add(
-                TrainCheckOutEntity(
-                    time = gregorianCalendar,
-                    destination = subList[1],
-                    workingHours = subList[2].toInt(),
-                    personEntityId = subList[3].toInt(),
-                    isBusy = subList[4].toBoolean(),
-                )
-            )
-        }
-        return returnedData
-    }
-
-    @TypeConverter
-    fun fromListTrainCheckOutEntity(checkOuts: List<TrainCheckOutEntity>): String {
-        return checkOuts
-            .stream()
-            .map {
-                "${fromGregorianCalendar(it.time)}=${it.destination}=${it.workingHours}=${it.personEntityId}=${it.isBusy}"
-            }
-            .collect(Collectors.joining("/"))
     }
 }

@@ -2,20 +2,14 @@ package ru.kostry.testdatabase.db.trains
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
+import ru.kostry.testdatabase.db.TimeInterval
 
 @Entity
 data class TrainEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val trainNumber: Int,
-    val checkOuts: List<TrainCheckOutEntity>,
-)
-
-data class TrainCheckOutEntity(
-    val time: GregorianCalendar,
+    val timetableId: Int = 0,
+    val routeNumber: String,
+    val time: TimeInterval,
     val destination: String,
-    val workingHours: Int,
-    var personEntityId: Int = 0,
-    var isBusy: Boolean = false,
 )

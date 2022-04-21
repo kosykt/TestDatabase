@@ -15,7 +15,4 @@ interface PersonDao {
 
     @Query("SELECT * FROM PersonEntity")
     fun getAll(): List<PersonEntity>
-
-    @Query("SELECT * FROM PersonEntity ORDER BY hoursWorked ASC")
-    fun getOrderedByHoursAsc(): List<PersonEntity>
 }
