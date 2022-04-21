@@ -34,8 +34,23 @@ class MainActivity : AppCompatActivity() {
         trainNumber = 1,
         checkOuts = listOf(
             TrainCheckOutEntity(
+                time = GregorianCalendar(2022, Calendar.APRIL, 20, 18, 30),
+                destination = "Moscow",
+                workingHours = 5000,
+            ),
+            TrainCheckOutEntity(
                 time = GregorianCalendar(2022, Calendar.APRIL, 21, 18, 30),
                 destination = "Moscow",
+                workingHours = 100,
+            ),
+            TrainCheckOutEntity(
+                time = GregorianCalendar(2022, Calendar.APRIL, 22, 18, 30),
+                destination = "Saint-Petersburg",
+                workingHours = 50,
+            ),
+            TrainCheckOutEntity(
+                time = GregorianCalendar(2022, Calendar.APRIL, 23, 18, 30),
+                destination = "Sochi",
                 workingHours = 10,
             )
         ),
@@ -89,7 +104,9 @@ class MainActivity : AppCompatActivity() {
         destination: String,
     ): Boolean {
         pathDirections.forEach { map ->
-            return (map.containsKey(destination)) && map[destination] == true
+            if ((map.containsKey(destination)) && map[destination] == true) {
+                return true
+            }
         }
         return false
     }
