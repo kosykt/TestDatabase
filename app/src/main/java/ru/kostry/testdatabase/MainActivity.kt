@@ -51,13 +51,23 @@ class MainActivity : AppCompatActivity() {
         stop = GregorianCalendar(2022, Calendar.APRIL, 21, 14, 0),
     )
 
+    private val train3 = TrainRouteEntity(
+        id = 3,
+        routeNumber = "456B",
+        destination = "Saint-Petersburg",
+        start = GregorianCalendar(2022, Calendar.APRIL, 20, 12, 0),
+        stop = GregorianCalendar(2022, Calendar.APRIL, 20, 13, 0),
+        personId = 1,
+        isBusy = true
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         lifecycleScope.launch(Dispatchers.IO) {
             db.instance.personDao.insert(listOf(person1))
-            db.instance.trainRouteDao.insert(listOf(train1, train2))
-            val trainsList = db.instance.trainRouteDao.getOrderedByTimeDesc()
+            db.instance.trainRouteDao.insert(listOf(train1, train2, train3))
+            val trainsList = db.instance.trainRouteDao.getNotBusyOrderedByTimeDesc()
             val personsList = db.instance.personDao.getOrderedByTimeAsc()
             startSorting(trainsList, personsList)
         }
