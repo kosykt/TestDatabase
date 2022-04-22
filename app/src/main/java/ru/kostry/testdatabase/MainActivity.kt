@@ -6,9 +6,9 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.kostry.testdatabase.db.AppDatabase
-import ru.kostry.testdatabase.db.TimeInterval
+import ru.kostry.testdatabase.db.persons.Interval
 import ru.kostry.testdatabase.db.persons.PersonEntity
-import ru.kostry.testdatabase.db.trains.TrainEntity
+import ru.kostry.testdatabase.db.trains.TrainRouteEntity
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -20,22 +20,35 @@ class MainActivity : AppCompatActivity() {
         secondName = "Ivanov",
         thirdName = "Ivanovich",
         daysOff = listOf(
-            GregorianCalendar(2022, Calendar.APRIL, 20),
+            GregorianCalendar(2022, Calendar.APRIL, 22),
         ),
         pathDirections = listOf(
             mapOf("Moscow" to true),
             mapOf("Saint-Petersburg" to true),
         ),
+        busyTime = listOf(
+            Interval(
+                trainRoute = "456B",
+                start = GregorianCalendar(2022, Calendar.APRIL, 20, 8, 30),
+                stop = GregorianCalendar(2022, Calendar.APRIL, 20, 9, 30),
+            )
+        )
     )
 
-    private val train1 = TrainEntity(
+    private val train1 = TrainRouteEntity(
         id = 1,
         routeNumber = "123A",
         destination = "Moscow",
-        time = TimeInterval(
-            GregorianCalendar(2022, Calendar.APRIL, 20, 8,30),
-            GregorianCalendar(2022, Calendar.APRIL, 20, 17, 30),
-        )
+        start = GregorianCalendar(2022, Calendar.APRIL, 20, 12, 0),
+        stop = GregorianCalendar(2022, Calendar.APRIL, 20, 13, 0),
+    )
+
+    private val train2 = TrainRouteEntity(
+        id = 2,
+        routeNumber = "123A",
+        destination = "Saint-Petersburg",
+        start = GregorianCalendar(2022, Calendar.APRIL, 21, 12, 0),
+        stop = GregorianCalendar(2022, Calendar.APRIL, 21, 14, 0),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,60 +56,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         lifecycleScope.launch(Dispatchers.IO) {
             db.instance.personDao.insert(listOf(person1))
-            db.instance.trainDao.insert(listOf(train1))
-            val trains = db.instance.trainDao.getAll().toMutableList()
-            val persons = db.instance.personDao.getAll().toMutableList()
-//            startSorting(trains, persons)
+            db.instance.trainRouteDao.insert(listOf(train1, train2))
+            val trainsList = db.instance.trainRouteDao.getOrderedByTimeDesc()
+            val personsList = db.instance.personDao.getOrderedByTimeAsc()
+            startSorting(trainsList, personsList)
         }
     }
 
 
-//    private fun startSorting(trains: MutableList<TrainEntity>, persons: MutableList<PersonEntity>) {
-//        trains.forEach { trainEntity ->
-//            trainEntity.checkOuts.forEach { trainCheckOut ->
-//                persons.forEach { personEntity ->
-//                    if (checkCanRide(personEntity, trainCheckOut)) {
-//
-//                    }
-//                }
-//            }
-//        }
-//
-//    }
-//
-//    private fun checkCanRide(
-//        person: PersonEntity,
-//        checkOut: TrainCheckOutEntity,
-//    ): Boolean {
-//        val path = checkCanPersonRideToPathway(person.pathDirections, checkOut.destination)
-//        if (!path) {
-//            return false
-//        }
-//        val date = checkPersonDayOffAndTrainDate(person.daysOff, checkOut.time)
-//        return path && date
-//    }
-//
-//    private fun checkCanPersonRideToPathway(
-//        pathDirections: List<Map<String, Boolean>>,
-//        destination: String,
-//    ): Boolean {
-//        pathDirections.forEach { map ->
-//            if ((map.containsKey(destination)) && map[destination] == true) {
-//                return true
-//            }
-//        }
-//        return false
-//    }
-//
-//    private fun checkPersonDayOffAndTrainDate(
-//        daysOff: List<GregorianCalendar>,
-//        date: GregorianCalendar,
-//    ): Boolean {
-//        daysOff.forEach { gregorianCalendar ->
-//            if (gregorianCalendar.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)) {
-//                return false
-//            }
-//        }
-//        return true
-//    }
+    private fun startSorting(
+        trainsList: List<TrainRouteEntity>,
+        personsList: List<PersonEntity>,
+    ) {
+
+    }
+
 }

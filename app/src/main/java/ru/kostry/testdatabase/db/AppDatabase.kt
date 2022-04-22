@@ -7,13 +7,13 @@ import androidx.room.TypeConverters
 import ru.kostry.testdatabase.App
 import ru.kostry.testdatabase.db.persons.PersonDao
 import ru.kostry.testdatabase.db.persons.PersonEntity
-import ru.kostry.testdatabase.db.trains.TrainDao
-import ru.kostry.testdatabase.db.trains.TrainEntity
+import ru.kostry.testdatabase.db.trains.TrainRouteDao
+import ru.kostry.testdatabase.db.trains.TrainRouteEntity
 
 @Database(
     entities = [
         PersonEntity::class,
-        TrainEntity::class,
+        TrainRouteEntity::class,
     ],
     version = 1,
     exportSchema = false
@@ -24,7 +24,7 @@ import ru.kostry.testdatabase.db.trains.TrainEntity
 abstract class AppDatabase : RoomDatabase() {
 
     abstract val personDao: PersonDao
-    abstract val trainDao: TrainDao
+    abstract val trainRouteDao: TrainRouteDao
 
     companion object {
         private const val DB_NAME = "database.db"

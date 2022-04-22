@@ -1,6 +1,7 @@
 package ru.kostry.testdatabase.db
 
 import androidx.room.TypeConverter
+import ru.kostry.testdatabase.db.persons.Interval
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.streams.toList
@@ -40,6 +41,51 @@ class DatabaseTypeConverter {
     fun fromListGregorianCalendar(listDate: List<GregorianCalendar>): String {
         return listDate.stream()
             .map { fromGregorianCalendar(it) }
+            .collect(Collectors.joining("/"))
+    }
+
+    @TypeConverter
+    fun toInterval(text: String): Interval {
+        val split = text.split("=")
+        return Interval(
+            trainRoute = split[0],
+            start = toGregorianCalendar(split[1]),
+            stop = toGregorianCalendar(split[2]),
+            millis = split[3].toLong()
+        )
+    }
+
+    @TypeConverter
+    fun fromInterval(interval: Interval): String {
+        val route = interval.trainRoute
+        val start = fromGregorianCalendar(interval.start)
+        val stop = fromGregorianCalendar(interval.stop)
+        val minutes = interval.millis
+        return "$route=$start=$stop=$minutes"
+    }
+
+    @TypeConverter
+    fun toListInterval(text: String): List<Interval> {
+        if (text.isEmpty()){
+            return emptyList()
+        }
+        val split = text.split("/")
+        return split.stream()
+            .map {
+                toInterval(it)
+            }
+            .collect(Collectors.toList())
+    }
+
+    @TypeConverter
+    fun fromListInterval(intervalList: List<Interval>): String {
+        if (intervalList.isEmpty()){
+            return ""
+        }
+        return intervalList.stream()
+            .map {
+                fromInterval(it)
+            }
             .collect(Collectors.joining("/"))
     }
 
