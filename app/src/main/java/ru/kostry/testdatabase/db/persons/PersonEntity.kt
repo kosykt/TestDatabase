@@ -14,7 +14,7 @@ data class PersonEntity(
     val thirdName: String,
     val daysOff: List<GregorianCalendar>,
     val pathDirections: List<Map<String, Boolean>>,
-    val busyTime: List<Interval> = emptyList(),
+    val busyTime: MutableList<Interval> = mutableListOf(),
     val workingMillis: Long = busyTime
         .stream()
         .map { it.millis }

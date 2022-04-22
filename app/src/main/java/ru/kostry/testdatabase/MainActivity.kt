@@ -26,11 +26,11 @@ class MainActivity : AppCompatActivity() {
             mapOf("Moscow" to true),
             mapOf("Saint-Petersburg" to true),
         ),
-        busyTime = listOf(
+        busyTime = mutableListOf(
             Interval(
                 trainRoute = "456B",
-                start = GregorianCalendar(2022, Calendar.APRIL, 20, 8, 30),
-                stop = GregorianCalendar(2022, Calendar.APRIL, 20, 9, 30),
+                start = GregorianCalendar(2022, Calendar.APRIL, 20, 12, 0),
+                stop = GregorianCalendar(2022, Calendar.APRIL, 20, 13, 0),
             )
         )
     )
@@ -68,7 +68,58 @@ class MainActivity : AppCompatActivity() {
         trainsList: List<TrainRouteEntity>,
         personsList: List<PersonEntity>,
     ) {
-
+        trainsList.forEach { routeEntity ->
+            if (!routeEntity.isBusy) {
+                personsList.forEach { personEntity ->
+                    if (checkCanRide(routeEntity, personEntity)) {
+                        routeEntity.isBusy = true
+                        routeEntity.personId = personEntity.id
+                        personEntity.busyTime.add(
+                            Interval(
+                                trainRoute = routeEntity.routeNumber,
+                                start = routeEntity.start,
+                                stop = routeEntity.stop,
+                            )
+                        )
+                    }
+                }
+            }
+        }
+        db.instance.personDao.insert(personsList)
+        db.instance.trainRouteDao.insert(trainsList)
     }
 
+    private fun checkCanRide(routeEntity: TrainRouteEntity, personEntity: PersonEntity): Boolean {
+        val route = checkDestination(routeEntity, personEntity)
+        val busy = checkIsBusy(routeEntity, personEntity)
+        return route && busy
+    }
+
+    private fun checkIsBusy(route: TrainRouteEntity, person: PersonEntity): Boolean {
+        person.daysOff.forEach { day ->
+            if (day.get(Calendar.DAY_OF_YEAR) == route.start.get(Calendar.DAY_OF_YEAR)) {
+                return false
+            }
+        }
+        person.busyTime.forEach { interval ->
+            when {
+                interval.start.after(route.stop) -> {
+                    return false
+                }
+                interval.stop.after(route.start) -> {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun checkDestination(route: TrainRouteEntity, person: PersonEntity): Boolean {
+        person.pathDirections.forEach { destination ->
+            if (destination.containsKey(route.destination) && destination[route.destination] == true) {
+                return true
+            }
+        }
+        return false
+    }
 }
