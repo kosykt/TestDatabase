@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//        Test().start()
         lifecycleScope.launch(Dispatchers.IO) {
             db.instance.personDao.insert(listOf(person1))
             db.instance.trainRouteDao.insert(listOf(train1, train2))
