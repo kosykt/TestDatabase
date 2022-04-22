@@ -39,8 +39,8 @@ class MainActivity : AppCompatActivity() {
         id = 1,
         routeNumber = "123A",
         destination = "Moscow",
-        start = GregorianCalendar(2022, Calendar.APRIL, 20, 18, 0),
-        stop = GregorianCalendar(2022, Calendar.APRIL, 20, 19, 0),
+        start = GregorianCalendar(2022, Calendar.APRIL, 20, 13, 30),
+        stop = GregorianCalendar(2022, Calendar.APRIL, 20, 14, 0),
     )
 
     private val train2 = TrainRouteEntity(
@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        Test().start()
         lifecycleScope.launch(Dispatchers.IO) {
             db.instance.personDao.insert(listOf(person1))
             db.instance.trainRouteDao.insert(listOf(train1, train2))
@@ -109,14 +108,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkIsBusy(route: TrainRouteEntity, person: PersonEntity): Boolean {
         person.busyTime.forEach { interval ->
-            if (interval.start.time.after(route.stop.time)) {
-                return false
-            }
-            if (interval.stop.time.after(route.start.time)) {
-                return false
+            if (interval.start > route.stop || interval.stop < route.start) {
+                return true
             }
         }
-        return true
+        return false
     }
 
     private fun checkDestination(route: TrainRouteEntity, person: PersonEntity): Boolean {
