@@ -39,13 +39,13 @@ class MainActivity : AppCompatActivity() {
         id = 1,
         routeNumber = "123A",
         destination = "Moscow",
-        start = GregorianCalendar(2022, Calendar.APRIL, 20, 12, 0),
-        stop = GregorianCalendar(2022, Calendar.APRIL, 20, 13, 0),
+        start = GregorianCalendar(2022, Calendar.APRIL, 20, 18, 0),
+        stop = GregorianCalendar(2022, Calendar.APRIL, 20, 19, 0),
     )
 
     private val train2 = TrainRouteEntity(
         id = 2,
-        routeNumber = "123A",
+        routeNumber = "789A",
         destination = "Saint-Petersburg",
         start = GregorianCalendar(2022, Calendar.APRIL, 21, 12, 0),
         stop = GregorianCalendar(2022, Calendar.APRIL, 21, 14, 0),
@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity() {
                                 stop = routeEntity.stop,
                             )
                         )
+                        personEntity.refreshWorkingMillis()
                     }
                 }
             }
@@ -93,23 +94,26 @@ class MainActivity : AppCompatActivity() {
     private fun checkCanRide(routeEntity: TrainRouteEntity, personEntity: PersonEntity): Boolean {
         val route = checkDestination(routeEntity, personEntity)
         val busy = checkIsBusy(routeEntity, personEntity)
-        return route && busy
+        val dayOff = checkDayOff(routeEntity, personEntity)
+        return route && busy && dayOff
     }
 
-    private fun checkIsBusy(route: TrainRouteEntity, person: PersonEntity): Boolean {
+    private fun checkDayOff(route: TrainRouteEntity, person: PersonEntity): Boolean {
         person.daysOff.forEach { day ->
             if (day.get(Calendar.DAY_OF_YEAR) == route.start.get(Calendar.DAY_OF_YEAR)) {
                 return false
             }
         }
+        return true
+    }
+
+    private fun checkIsBusy(route: TrainRouteEntity, person: PersonEntity): Boolean {
         person.busyTime.forEach { interval ->
-            when {
-                interval.start.after(route.stop) -> {
-                    return false
-                }
-                interval.stop.after(route.start) -> {
-                    return false
-                }
+            if (interval.start.time.after(route.stop.time)) {
+                return false
+            }
+            if (interval.stop.time.after(route.start.time)) {
+                return false
             }
         }
         return true

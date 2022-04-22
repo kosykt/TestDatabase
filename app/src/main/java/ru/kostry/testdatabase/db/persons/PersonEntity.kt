@@ -15,12 +15,20 @@ data class PersonEntity(
     val daysOff: List<GregorianCalendar>,
     val pathDirections: List<Map<String, Boolean>>,
     val busyTime: MutableList<Interval> = mutableListOf(),
-    val workingMillis: Long = busyTime
+    var workingMillis: Long = busyTime
         .stream()
         .map { it.millis }
         .collect(Collectors.toList())
         .sum()
-)
+){
+    fun refreshWorkingMillis(){
+        workingMillis = busyTime
+            .stream()
+            .map { it.millis }
+            .collect(Collectors.toList())
+            .sum()
+    }
+}
 
 data class Interval(
     val trainRoute: String,
