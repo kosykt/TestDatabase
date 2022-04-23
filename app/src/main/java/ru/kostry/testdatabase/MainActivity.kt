@@ -35,6 +35,27 @@ class MainActivity : AppCompatActivity() {
         )
     )
 
+    private val person2 = PersonEntity(
+        id = 2,
+        firstName = "Petr",
+        secondName = "Petrov",
+        thirdName = "Petrovich",
+        daysOff = listOf(
+            GregorianCalendar(2022, Calendar.APRIL, 22),
+        ),
+        pathDirections = listOf(
+            mapOf("Moscow" to true),
+            mapOf("Saint-Petersburg" to true),
+        ),
+        busyTime = mutableListOf(
+            Interval(
+                trainRoute = "11111B",
+                start = GregorianCalendar(2022, Calendar.APRIL, 20, 12, 0),
+                stop = GregorianCalendar(2022, Calendar.APRIL, 25, 13, 0),
+            )
+        )
+    )
+
     private val train1 = TrainRouteEntity(
         id = 1,
         routeNumber = "123A",
@@ -65,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         lifecycleScope.launch(Dispatchers.IO) {
-            db.instance.personDao.insert(listOf(person1))
+            db.instance.personDao.insert(listOf(person1, person2))
             db.instance.trainRouteDao.insert(listOf(train1, train2, train3))
             val trainsList = db.instance.trainRouteDao.getNotBusyOrderedByTimeDesc()
             val personsList = db.instance.personDao.getOrderedByTimeAsc()
@@ -77,26 +98,29 @@ class MainActivity : AppCompatActivity() {
         trainsList: List<TrainRouteEntity>,
         personsList: List<PersonEntity>,
     ) {
-        trainsList.forEach { routeEntity ->
-            if (!routeEntity.isBusy) {
-                personsList.forEach { personEntity ->
-                    if (checkCanRide(routeEntity, personEntity)) {
-                        routeEntity.isBusy = true
-                        routeEntity.personId = personEntity.id
-                        personEntity.busyTime.add(
-                            Interval(
-                                trainRoute = routeEntity.routeNumber,
-                                start = routeEntity.start,
-                                stop = routeEntity.stop,
-                            )
-                        )
-                        personEntity.refreshWorkingMillis()
-                    }
-                }
+        val changedPersons = mutableListOf<PersonEntity>()
+        trainsList.forEach { trainEntity ->
+            val person = getPersonWithMinTime(personsList)
+            if (person != null && checkCanRide(trainEntity, person)) {
+                trainEntity.isBusy = true
+                trainEntity.personId = person.id
+                person.busyTime.add(
+                    Interval(
+                        trainRoute = trainEntity.routeNumber,
+                        start = trainEntity.start,
+                        stop = trainEntity.stop,
+                    )
+                )
+                person.refreshWorkingMillis()
+                changedPersons.add(person)
             }
         }
-        db.instance.personDao.insert(personsList)
+        db.instance.personDao.insert(changedPersons)
         db.instance.trainRouteDao.insert(trainsList)
+    }
+
+    private fun getPersonWithMinTime(personsList: List<PersonEntity>): PersonEntity? {
+        return personsList.minByOrNull { it.workingMillis }
     }
 
     private fun checkCanRide(routeEntity: TrainRouteEntity, personEntity: PersonEntity): Boolean {
