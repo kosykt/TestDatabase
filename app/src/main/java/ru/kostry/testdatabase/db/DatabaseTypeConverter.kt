@@ -65,9 +65,9 @@ class DatabaseTypeConverter {
     }
 
     @TypeConverter
-    fun toListInterval(text: String): List<Interval> {
+    fun toListInterval(text: String): MutableList<Interval> {
         if (text.isEmpty()){
-            return emptyList()
+            return mutableListOf()
         }
         val split = text.split("/")
         return split.stream()
@@ -91,6 +91,9 @@ class DatabaseTypeConverter {
 
     @TypeConverter
     fun toGregorianCalendar(text: String): GregorianCalendar {
+        if (text.isEmpty()){
+            return GregorianCalendar()
+        }
         val dateList: List<String> = text.split(",")
         return GregorianCalendar().apply {
             this.set(Calendar.YEAR, dateList[0].toInt())
