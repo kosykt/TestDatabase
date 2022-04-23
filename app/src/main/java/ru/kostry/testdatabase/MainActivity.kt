@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startSorting(
+    private suspend fun startSorting(
         trainsList: List<TrainRouteEntity>,
         personsList: List<PersonEntity>,
     ) {

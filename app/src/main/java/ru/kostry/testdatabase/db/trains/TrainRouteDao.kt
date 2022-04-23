@@ -6,20 +6,20 @@ import androidx.room.*
 interface TrainRouteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(trainRoute: TrainRouteEntity)
+    suspend fun insert(trainRoute: TrainRouteEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(trainRoute: List<TrainRouteEntity>)
+    suspend fun insert(trainRoute: List<TrainRouteEntity>)
 
     @Delete
-    fun delete(trainRoute: TrainRouteEntity)
+    suspend fun delete(trainRoute: TrainRouteEntity)
 
     @Delete
-    fun delete(trainRoute: List<TrainRouteEntity>)
+    suspend fun delete(trainRoute: List<TrainRouteEntity>)
 
     @Query("SELECT * FROM TrainRouteEntity")
-    fun getAll(): List<TrainRouteEntity>
+    suspend fun getAll(): List<TrainRouteEntity>
 
     @Query("SELECT * FROM TrainRouteEntity WHERE isBusy = 0 ORDER BY totalTimeInMillis DESC")
-    fun getNotBusyOrderedByTimeDesc(): List<TrainRouteEntity>
+    suspend fun getNotBusyOrderedByTimeDesc(): List<TrainRouteEntity>
 }
