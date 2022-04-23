@@ -15,13 +15,12 @@ class MainActivity : AppCompatActivity() {
 
     private val db = AppDatabase
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         lifecycleScope.launch(Dispatchers.IO) {
-//            db.instance.personDao.insert(getRandomPersons(25))
-//            db.instance.trainRouteDao.insert(getRandomRoutes(100))
+            db.instance.personDao.insert(getRandomPersons(25))
+            db.instance.trainRouteDao.insert(getRandomRoutes(100))
             val trainsList = db.instance.trainRouteDao.getNotBusyOrderedByTimeDesc()
             val personsList = db.instance.personDao.getOrderedByTimeAsc()
             startSorting(trainsList, personsList)
@@ -34,19 +33,27 @@ class MainActivity : AppCompatActivity() {
     ) {
         val changedPersons = mutableListOf<PersonEntity>()
         trainsList.forEach { trainEntity ->
-            val person = getPersonWithMinTime(personsList)
-            if (person != null && checkCanRide(trainEntity, person)) {
-                trainEntity.isBusy = true
-                trainEntity.personId = person.id
-                person.busyTime.add(
-                    Interval(
-                        trainRoute = trainEntity.routeNumber,
-                        start = trainEntity.start,
-                        stop = trainEntity.stop,
+            val personEntity: PersonEntity? = personsList
+                .filter {
+                    checkCanRide(trainEntity, it)
+                }
+                .minByOrNull {
+                    it.workingMillis
+                }
+                ?.apply {
+                    busyTime.add(
+                        Interval(
+                            trainRoute = trainEntity.routeNumber,
+                            start = trainEntity.start,
+                            stop = trainEntity.stop,
+                        )
                     )
-                )
-                person.refreshWorkingMillis()
-                changedPersons.add(person)
+                    refreshWorkingMillis()
+                }
+            if (personEntity != null) {
+                trainEntity.isBusy = true
+                trainEntity.personId = personEntity.id
+                changedPersons.add(personEntity)
             }
         }
         db.instance.personDao.insert(changedPersons)
@@ -77,7 +84,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIsBusy(train: TrainRouteEntity, busyTimes: MutableList<Interval>): Boolean {
-        if (busyTimes.isEmpty()){
+        if (busyTimes.isEmpty()) {
             return true
         }
         busyTimes.forEach { interval ->
