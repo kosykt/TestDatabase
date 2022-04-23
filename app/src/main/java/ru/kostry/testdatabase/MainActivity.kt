@@ -73,7 +73,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun startSorting(
         trainsList: List<TrainRouteEntity>,
         personsList: List<PersonEntity>,
@@ -101,33 +100,39 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkCanRide(routeEntity: TrainRouteEntity, personEntity: PersonEntity): Boolean {
-        val route = checkDestination(routeEntity, personEntity)
-        val busy = checkIsBusy(routeEntity, personEntity)
-        val dayOff = checkDayOff(routeEntity, personEntity)
+        val route = checkDestination(routeEntity.destination, personEntity.pathDirections)
+        val busy = checkIsBusy(routeEntity, personEntity.busyTime)
+        val dayOff = checkDayOff(routeEntity.start, personEntity.daysOff)
         return route && busy && dayOff
     }
 
-    private fun checkDayOff(route: TrainRouteEntity, person: PersonEntity): Boolean {
-        person.daysOff.forEach { day ->
-            if (day.get(Calendar.DAY_OF_YEAR) == route.start.get(Calendar.DAY_OF_YEAR)) {
+    private fun checkDayOff(
+        trainStartTime: GregorianCalendar,
+        daysOff: List<GregorianCalendar>,
+    ): Boolean {
+        daysOff.forEach { day ->
+            if (day.get(Calendar.DAY_OF_YEAR) == trainStartTime.get(Calendar.DAY_OF_YEAR)) {
                 return false
             }
         }
         return true
     }
 
-    private fun checkIsBusy(route: TrainRouteEntity, person: PersonEntity): Boolean {
-        person.busyTime.forEach { interval ->
-            if (interval.start > route.stop || interval.stop < route.start) {
+    private fun checkIsBusy(train: TrainRouteEntity, busyTimes: MutableList<Interval>): Boolean {
+        busyTimes.forEach { interval ->
+            if (interval.start > train.stop || interval.stop < train.start) {
                 return true
             }
         }
         return false
     }
 
-    private fun checkDestination(route: TrainRouteEntity, person: PersonEntity): Boolean {
-        person.pathDirections.forEach { destination ->
-            if (destination.containsKey(route.destination) && destination[route.destination] == true) {
+    private fun checkDestination(
+        destination: String,
+        pathDirections: List<Map<String, Boolean>>,
+    ): Boolean {
+        pathDirections.forEach { path ->
+            if (path.containsKey(destination) && path[destination] == true) {
                 return true
             }
         }
