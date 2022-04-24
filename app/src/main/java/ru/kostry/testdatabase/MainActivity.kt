@@ -9,6 +9,7 @@ import ru.kostry.testdatabase.db.AppDatabase
 import ru.kostry.testdatabase.db.persons.Interval
 import ru.kostry.testdatabase.db.persons.PersonEntity
 import ru.kostry.testdatabase.db.trains.TrainRouteEntity
+import java.time.LocalDate
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -19,8 +20,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         lifecycleScope.launch(Dispatchers.IO) {
-            db.instance.personDao.insert(getRandomPersons(35))
-            db.instance.trainRouteDao.insert(getRandomRoutes(100))
+            db.instance.personDao.insert(getRandomPersons(100))
+            db.instance.trainRouteDao.insert(getRandomRoutes(1000))
             val trainsList = db.instance.trainRouteDao.getNotBusyOrderedByTimeDesc()
             val personsList = db.instance.personDao.getOrderedByTimeAsc()
             startSorting(trainsList, personsList)

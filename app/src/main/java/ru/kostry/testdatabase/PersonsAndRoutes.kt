@@ -25,7 +25,7 @@ fun getPerson(i: Int): PersonEntity {
 fun getDirections(): List<Map<String, Boolean>> {
     val list = mutableListOf<Map<String, Boolean>>()
     val b = listOf(true, false).shuffled()
-    when ((0..2).random()) {
+    when ((0..7).random()) {
         0 -> {
             list.add(mapOf("Moscow" to true))
         }
@@ -43,10 +43,15 @@ fun getDirections(): List<Map<String, Boolean>> {
             list.add(mapOf("Saint-Petersburg" to b[1]))
             list.add(mapOf("Sochi" to b[0]))
         }
-        else -> {
+        6 -> {
             list.add(mapOf("Saint-Petersburg" to b[1]))
             list.add(mapOf("Sochi" to b[0]))
             list.add(mapOf("Moscow" to b[1]))
+        }
+        else -> {
+            list.add(mapOf("Saint-Petersburg" to true))
+            list.add(mapOf("Sochi" to true))
+            list.add(mapOf("Moscow" to true))
         }
     }
     return list
