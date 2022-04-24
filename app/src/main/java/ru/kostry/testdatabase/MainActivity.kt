@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         lifecycleScope.launch(Dispatchers.IO) {
-            db.instance.personDao.insert(getRandomPersons(25))
+            db.instance.personDao.insert(getRandomPersons(35))
             db.instance.trainRouteDao.insert(getRandomRoutes(100))
             val trainsList = db.instance.trainRouteDao.getNotBusyOrderedByTimeDesc()
             val personsList = db.instance.personDao.getOrderedByTimeAsc()
@@ -58,10 +58,6 @@ class MainActivity : AppCompatActivity() {
         }
         db.instance.personDao.insert(changedPersons)
         db.instance.trainRouteDao.insert(trainsList)
-    }
-
-    private fun getPersonWithMinTime(personsList: List<PersonEntity>): PersonEntity? {
-        return personsList.minByOrNull { it.workingMillis }
     }
 
     private fun checkCanRide(routeEntity: TrainRouteEntity, personEntity: PersonEntity): Boolean {
