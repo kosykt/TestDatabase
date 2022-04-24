@@ -1,5 +1,6 @@
 package ru.kostry.testdatabase
 
+import ru.kostry.testdatabase.db.persons.Interval
 import ru.kostry.testdatabase.db.persons.PersonEntity
 import ru.kostry.testdatabase.db.trains.TrainRouteEntity
 import java.util.*
@@ -18,8 +19,90 @@ fun getPerson(i: Int): PersonEntity {
         secondName = "Person $i",
         thirdName = "Person $i",
         daysOff = getDaysOff(),
-        pathDirections = getDirections()
+        pathDirections = getDirections(),
+        busyTime = getBusy(),
     )
+}
+
+fun getBusy(): MutableList<Interval> {
+    when ((0..3).random()) {
+        0 -> {
+            val date = getRouteDate()
+            return mutableListOf(
+                Interval(
+                    trainRoute = "${(1000..9999).random()}",
+                    start = date[0],
+                    stop = date[1],
+                )
+            )
+        }
+        1 -> {
+            val date = getRouteDate()
+            val date1 = getRouteDate()
+            return mutableListOf(
+                Interval(
+                    trainRoute = "${(1000..9999).random()}",
+                    start = date[0],
+                    stop = date[1],
+                ),
+                Interval(
+                    trainRoute = "${(1000..9999).random()}",
+                    start = date1[0],
+                    stop = date1[1],
+                )
+            )
+        }
+        2 -> {
+            val date = getRouteDate()
+            val date1 = getRouteDate()
+            val date2 = getRouteDate()
+            return mutableListOf(
+                Interval(
+                    trainRoute = "${(1000..9999).random()}",
+                    start = date[0],
+                    stop = date[1],
+                ),
+                Interval(
+                    trainRoute = "${(1000..9999).random()}",
+                    start = date1[0],
+                    stop = date1[1],
+                ),
+                Interval(
+                    trainRoute = "${(1000..9999).random()}",
+                    start = date2[0],
+                    stop = date2[1],
+                ),
+            )
+        }
+        else -> {
+            val date = getRouteDate()
+            val date1 = getRouteDate()
+            val date2 = getRouteDate()
+            val date3 = getRouteDate()
+            return mutableListOf(
+                Interval(
+                    trainRoute = "${(1000..9999).random()}",
+                    start = date[0],
+                    stop = date[1],
+                ),
+                Interval(
+                    trainRoute = "${(1000..9999).random()}",
+                    start = date1[0],
+                    stop = date1[1],
+                ),
+                Interval(
+                    trainRoute = "${(1000..9999).random()}",
+                    start = date2[0],
+                    stop = date2[1],
+                ),
+                Interval(
+                    trainRoute = "${(1000..9999).random()}",
+                    start = date3[0],
+                    stop = date3[1],
+                ),
+            )
+        }
+    }
 }
 
 fun getDirections(): List<Map<String, Boolean>> {

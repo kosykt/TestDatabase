@@ -1,6 +1,7 @@
 package ru.kostry.testdatabase.db.persons
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PersonDao {
@@ -14,7 +15,7 @@ interface PersonDao {
     suspend fun delete(model: PersonEntity)
 
     @Query("SELECT * FROM PersonEntity")
-    suspend fun getAll(): List<PersonEntity>
+    fun getAll(): Flow<List<PersonEntity>>
 
     @Query("SELECT * FROM PersonEntity ORDER BY workingMillis ASC")
     suspend fun getOrderedByTimeAsc(): List<PersonEntity>
