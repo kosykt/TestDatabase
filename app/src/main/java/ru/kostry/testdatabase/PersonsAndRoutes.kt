@@ -18,9 +18,9 @@ fun getPerson(i: Int): PersonEntity {
         firstName = "Person $i",
         secondName = "Person $i",
         thirdName = "Person $i",
-        daysOff = getDaysOff(),
+        daysOff = mutableListOf(),
         pathDirections = getDirections(),
-        busyTime = getBusy(),
+        busyTime = mutableListOf(),
     )
 }
 
@@ -108,7 +108,7 @@ fun getBusy(): MutableList<Interval> {
 fun getDirections(): List<Map<String, Boolean>> {
     val list = mutableListOf<Map<String, Boolean>>()
     val b = listOf(true, false).shuffled()
-    when ((0..7).random()) {
+    when ((55..57).random()) {
         0 -> {
             list.add(mapOf("Moscow" to true))
         }

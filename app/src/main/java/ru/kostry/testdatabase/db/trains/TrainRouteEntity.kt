@@ -12,7 +12,6 @@ data class TrainRouteEntity(
     val destination: String,
     val start: GregorianCalendar,
     val stop: GregorianCalendar,
-    var isBusy: Boolean = false,
     var personId: Int = 0,
     val totalTimeInMillis: Long = stop.timeInMillis - start.timeInMillis,
 )

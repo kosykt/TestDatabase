@@ -21,6 +21,9 @@ interface TrainRouteDao {
     @Query("SELECT * FROM TrainRouteEntity")
     fun getAll(): Flow<List<TrainRouteEntity>>
 
-    @Query("SELECT * FROM TrainRouteEntity WHERE isBusy = 0 ORDER BY totalTimeInMillis DESC")
+    @Query("SELECT * FROM TrainRouteEntity WHERE personId != 0 ORDER BY totalTimeInMillis DESC")
     suspend fun getNotBusyOrderedByTimeDesc(): List<TrainRouteEntity>
+
+    @Query("SELECT * FROM TrainRouteEntity ORDER BY totalTimeInMillis DESC")
+    suspend fun getOrderedByTimeDesc(): List<TrainRouteEntity>
 }

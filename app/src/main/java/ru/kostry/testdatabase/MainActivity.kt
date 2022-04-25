@@ -19,12 +19,36 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         lifecycleScope.launch(Dispatchers.IO) {
-            db.instance.personDao.insert(getRandomPersons(300))
-            db.instance.trainRouteDao.insert(getRandomRoutes(3000))
-            val trainsList = db.instance.trainRouteDao.getNotBusyOrderedByTimeDesc()
-            val personsList = db.instance.personDao.getOrderedByTimeAsc()
-            startSorting(trainsList, personsList)
+//            db.instance.personDao.insert(getRandomPersons(1))
+//            db.instance.trainRouteDao.insert(getRandomRoutes(1))
+            val roomTrains = db.instance.trainRouteDao.getOrderedByTimeDesc()
+            val roomPersons = db.instance.personDao.getOrderedByTimeAsc()
+
+            startSorting(
+                trainsList = cleanTrainRouteDataAfterActualDate(roomTrains),
+                personsList = removeBusyIntervalAfterActualDate(roomPersons))
         }
+    }
+
+    private fun cleanTrainRouteDataAfterActualDate(trainsList: List<TrainRouteEntity>): List<TrainRouteEntity> {
+        val actualDate = GregorianCalendar().apply { time = Date() }
+        trainsList.forEach { route ->
+            if (route.start.get(Calendar.DAY_OF_YEAR) > actualDate.get(Calendar.DAY_OF_YEAR)) {
+                route.personId = 0
+            }
+        }
+        return trainsList
+    }
+
+    private fun removeBusyIntervalAfterActualDate(personsList: List<PersonEntity>): List<PersonEntity> {
+        val actualDate = GregorianCalendar().apply { time = Date() }
+        personsList.forEach { person ->
+            person.busyTime.removeIf { interval ->
+                interval.start.get(Calendar.DAY_OF_YEAR) > actualDate.get(Calendar.DAY_OF_YEAR)
+            }
+            person.refreshWorkingMillis()
+        }
+        return personsList
     }
 
     private suspend fun startSorting(
@@ -32,28 +56,29 @@ class MainActivity : AppCompatActivity() {
         personsList: List<PersonEntity>,
     ) {
         val changedPersons = mutableListOf<PersonEntity>()
+        TODO("переписать на перебор от машиниста и выборку маршрута")
         trainsList.forEach { trainEntity ->
-            val personEntity: PersonEntity? = personsList
-                .filter {
-                    checkCanRide(trainEntity, it)
-                }
-                .minByOrNull {
-                    it.workingMillis
-                }
-                ?.apply {
-                    busyTime.add(
-                        Interval(
-                            trainRoute = trainEntity.routeNumber,
-                            start = trainEntity.start,
-                            stop = trainEntity.stop,
-                        )
+            if (trainEntity.personId == 0) {
+                val personEntity: PersonEntity? = personsList
+                    .filter {
+                        checkCanRide(trainEntity, it)
+                    }
+                    .minByOrNull {
+                        it.workingMillis
+                    }
+                personEntity?.busyTime?.add(
+                    Interval(
+                        trainRoute = trainEntity.routeNumber,
+                        start = trainEntity.start,
+                        stop = trainEntity.stop,
                     )
-                    refreshWorkingMillis()
+                )
+                personEntity?.refreshWorkingMillis()
+
+                if (personEntity != null) {
+                    trainEntity.personId = personEntity.id
+                    changedPersons.add(personEntity)
                 }
-            if (personEntity != null) {
-                trainEntity.isBusy = true
-                trainEntity.personId = personEntity.id
-                changedPersons.add(personEntity)
             }
         }
         db.instance.personDao.insert(changedPersons)
