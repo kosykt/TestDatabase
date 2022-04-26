@@ -1,4 +1,4 @@
-package ru.kostry.testdatabase.db.trains
+package ru.kostry.testdatabase.data.db.trains
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,7 @@ interface TrainRouteDao {
     suspend fun delete(trainRoute: List<TrainRouteEntity>)
 
     @Query("SELECT * FROM TrainRouteEntity")
-    fun getAll(): Flow<List<TrainRouteEntity>>
+    fun getAllToObserve(): Flow<List<TrainRouteEntity>>
 
     @Query("SELECT * FROM TrainRouteEntity WHERE personId != 0 ORDER BY totalTimeInMillis DESC")
     suspend fun getNotBusyOrderedByTimeDesc(): List<TrainRouteEntity>

@@ -1,4 +1,4 @@
-package ru.kostry.testdatabase.db.trains
+package ru.kostry.testdatabase.data.db.trains
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

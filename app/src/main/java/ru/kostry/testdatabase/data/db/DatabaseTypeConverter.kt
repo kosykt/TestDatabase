@@ -1,7 +1,7 @@
-package ru.kostry.testdatabase.db
+package ru.kostry.testdatabase.data.db
 
 import androidx.room.TypeConverter
-import ru.kostry.testdatabase.db.persons.Interval
+import ru.kostry.testdatabase.data.db.persons.Interval
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.streams.toList

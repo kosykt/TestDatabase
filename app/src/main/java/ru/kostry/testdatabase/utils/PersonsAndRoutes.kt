@@ -1,8 +1,8 @@
-package ru.kostry.testdatabase
+package ru.kostry.testdatabase.utils
 
-import ru.kostry.testdatabase.db.persons.Interval
-import ru.kostry.testdatabase.db.persons.PersonEntity
-import ru.kostry.testdatabase.db.trains.TrainRouteEntity
+import ru.kostry.testdatabase.data.db.persons.Interval
+import ru.kostry.testdatabase.data.db.persons.PersonEntity
+import ru.kostry.testdatabase.data.db.trains.TrainRouteEntity
 import java.util.*
 
 fun getRandomPersons(int: Int): List<PersonEntity> {

@@ -1,14 +1,14 @@
-package ru.kostry.testdatabase.db
+package ru.kostry.testdatabase.data.db
 
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ru.kostry.testdatabase.App
-import ru.kostry.testdatabase.db.persons.PersonDao
-import ru.kostry.testdatabase.db.persons.PersonEntity
-import ru.kostry.testdatabase.db.trains.TrainRouteDao
-import ru.kostry.testdatabase.db.trains.TrainRouteEntity
+import ru.kostry.testdatabase.data.db.persons.PersonDao
+import ru.kostry.testdatabase.data.db.persons.PersonEntity
+import ru.kostry.testdatabase.data.db.trains.TrainRouteDao
+import ru.kostry.testdatabase.data.db.trains.TrainRouteEntity
 
 @Database(
     entities = [

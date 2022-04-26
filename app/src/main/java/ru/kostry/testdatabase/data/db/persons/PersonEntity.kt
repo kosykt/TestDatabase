@@ -1,4 +1,4 @@
-package ru.kostry.testdatabase.db.persons
+package ru.kostry.testdatabase.data.db.persons
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
