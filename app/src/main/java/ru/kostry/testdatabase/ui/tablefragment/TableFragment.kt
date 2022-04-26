@@ -22,6 +22,7 @@ import java.util.*
 
 class TableFragment : Fragment() {
 
+    //добавить DI
     private val db = AppDatabase.instance
     private val databaseRepository = DatabaseRepositoryImpl(db)
     private val useCasesRepository = UseCasesRepositoryImpl(databaseRepository)

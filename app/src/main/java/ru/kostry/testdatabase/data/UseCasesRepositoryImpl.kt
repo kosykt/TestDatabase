@@ -2,18 +2,14 @@ package ru.kostry.testdatabase.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.kostry.testdatabase.data.db.AppDatabase
-import ru.kostry.testdatabase.data.db.persons.PersonEntity
-import ru.kostry.testdatabase.data.db.trains.TrainRouteEntity
 import ru.kostry.testdatabase.domain.UseCasesRepository
 import ru.kostry.testdatabase.domain.models.PersonDomainModel
 import ru.kostry.testdatabase.domain.models.TrainRouteDomainModel
 import ru.kostry.testdatabase.utils.*
-import ru.kostry.testdatabase.utils.models.PersonTimeInterval
 import java.util.*
 
 class UseCasesRepositoryImpl(
-    private val databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository,
 ) : UseCasesRepository {
 
     override suspend fun addNewPerson(person: PersonDomainModel) {
