@@ -4,5 +4,5 @@ class GetAllPersonsUseCase(
     private val repository: UseCasesRepository
 ) {
 
-    suspend fun getAllPersons() = repository.getAllPersons()
+    fun execute() = repository.getAllPersons()
 }

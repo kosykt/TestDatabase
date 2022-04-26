@@ -37,30 +37,32 @@ class UseCasesRepositoryImpl(
     }
 
     override suspend fun makeSchedule() {
-        val trainsList = db.trainRouteDao.getNotBusyOrderedByTimeDesc()
+        val trainsList = db.trainRouteDao.getOrderedByTimeDesc()
         val personsList = db.personDao.getOrderedByTimeAsc()
 
         val changedPersons = mutableListOf<PersonEntity>()
         trainsList.forEach { trainEntity ->
-            val personEntity: PersonEntity? = personsList
-                .filter {
-                    checkCanRide(trainEntity, it)
-                }
-                .minByOrNull {
-                    it.workingMillis
-                }
-            personEntity?.busyTime?.add(
-                Interval(
-                    trainRoute = trainEntity.routeNumber,
-                    start = trainEntity.start,
-                    stop = trainEntity.stop,
+            if (trainEntity.personId == 0) {
+                val personEntity: PersonEntity? = personsList
+                    .filter {
+                        checkCanRide(trainEntity, it)
+                    }
+                    .minByOrNull {
+                        it.workingMillis
+                    }
+                personEntity?.busyTime?.add(
+                    Interval(
+                        trainRoute = trainEntity.routeNumber,
+                        start = trainEntity.start,
+                        stop = trainEntity.stop,
+                    )
                 )
-            )
-            personEntity?.refreshWorkingMillis()
+                personEntity?.refreshWorkingMillis()
 
-            if (personEntity != null) {
-                trainEntity.personId = personEntity.id
-                changedPersons.add(personEntity)
+                if (personEntity != null) {
+                    trainEntity.personId = personEntity.id
+                    changedPersons.add(personEntity)
+                }
             }
         }
         db.personDao.insert(changedPersons)

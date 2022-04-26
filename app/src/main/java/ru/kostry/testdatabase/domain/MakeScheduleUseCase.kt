@@ -4,5 +4,7 @@ class MakeScheduleUseCase(
     private val repository: UseCasesRepository
 ) {
 
-    suspend fun execute() = repository.makeSchedule()
+    suspend fun execute() {
+        repository.makeSchedule()
+    }
 }
