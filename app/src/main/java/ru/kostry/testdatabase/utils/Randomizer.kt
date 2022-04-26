@@ -13,7 +13,7 @@ fun getRandomPersons(int: Int): List<PersonDomainModel> {
     return list
 }
 
-fun getPerson(i: Int): PersonDomainModel {
+private fun getPerson(i: Int): PersonDomainModel {
     return PersonDomainModel(
         firstName = "Person $i",
         secondName = "Person $i",
@@ -24,7 +24,7 @@ fun getPerson(i: Int): PersonDomainModel {
     )
 }
 
-fun getBusy(): MutableList<PersonTimeInterval> {
+private fun getBusy(): MutableList<PersonTimeInterval> {
     when ((0..3).random()) {
         0 -> {
             val date = getRouteDate()
@@ -105,7 +105,7 @@ fun getBusy(): MutableList<PersonTimeInterval> {
     }
 }
 
-fun getDirections(): List<Map<String, Boolean>> {
+private fun getDirections(): List<Map<String, Boolean>> {
     val list = mutableListOf<Map<String, Boolean>>()
     val b = listOf(true, false).shuffled()
     when ((55..57).random()) {
@@ -141,7 +141,7 @@ fun getDirections(): List<Map<String, Boolean>> {
 }
 
 
-fun getDaysOff(): MutableList<GregorianCalendar> {
+private fun getDaysOff(): MutableList<GregorianCalendar> {
     val list = mutableListOf<GregorianCalendar>()
     for (i in 0..(0..6).random()) {
         list.add(GregorianCalendar(2022, (0..11).random(), (0..30).random()))
@@ -157,7 +157,7 @@ fun getRandomRoutes(int: Int): MutableList<TrainRouteDomainModel> {
     return list
 }
 
-fun getTrain(): TrainRouteDomainModel {
+private fun getTrain(): TrainRouteDomainModel {
     val date = getRouteDate()
     return TrainRouteDomainModel(
         routeNumber = "${(1000..9999).random()}",
@@ -167,7 +167,7 @@ fun getTrain(): TrainRouteDomainModel {
     )
 }
 
-fun getRouteDate(): List<GregorianCalendar> {
+private fun getRouteDate(): List<GregorianCalendar> {
     val month = (0..11).random()
     val day = (0..31).random()
     val hour = (0..24).random()
@@ -177,7 +177,7 @@ fun getRouteDate(): List<GregorianCalendar> {
     return listOf(start, stop)
 }
 
-fun getCity(): String {
+private fun getCity(): String {
     return when ((0..2).random()) {
         0 -> "Moscow"
         1 -> "Saint-Petersburg"

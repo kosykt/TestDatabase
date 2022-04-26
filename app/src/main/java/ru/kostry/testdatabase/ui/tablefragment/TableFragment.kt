@@ -11,8 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import ru.kostry.testdatabase.data.UseCasesRepositoryImpl
 import ru.kostry.testdatabase.data.db.AppDatabase
-import ru.kostry.testdatabase.data.db.persons.PersonEntity
-import ru.kostry.testdatabase.data.db.trains.TrainRouteEntity
+import ru.kostry.testdatabase.data.db.DatabaseRepositoryImpl
 import ru.kostry.testdatabase.databinding.FragmentTableBinding
 import ru.kostry.testdatabase.domain.*
 import ru.kostry.testdatabase.domain.models.PersonDomainModel
@@ -24,7 +23,8 @@ import java.util.*
 class TableFragment : Fragment() {
 
     private val db = AppDatabase.instance
-    private val useCasesRepository = UseCasesRepositoryImpl(db)
+    private val databaseRepository = DatabaseRepositoryImpl(db)
+    private val useCasesRepository = UseCasesRepositoryImpl(databaseRepository)
     private val addPerson = AddNewPersonUseCase(useCasesRepository)
     private val addTrain = AddNewTrainRouteUseCase(useCasesRepository)
     private val getAllPersons = GetAllPersonsUseCase(useCasesRepository)
@@ -62,7 +62,7 @@ class TableFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentTableBinding.inflate(inflater,container, false)
+        _binding = FragmentTableBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -82,7 +82,7 @@ class TableFragment : Fragment() {
             }
         }
         lifecycleScope.launchWhenStarted {
-            observableTrains.collect{
+            observableTrains.collect {
                 adapterTrains.submitList(it)
             }
         }
