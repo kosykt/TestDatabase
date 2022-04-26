@@ -69,6 +69,13 @@ class UseCasesRepositoryImpl(
         db.trainRouteDao.insert(trainsList)
     }
 
+    override suspend fun cleanAfterDate(date: GregorianCalendar) {
+        val t = cleanTrainRouteData(db.trainRouteDao.getOrderedByTimeDesc(), date)
+        val p = cleanPersonBusyData(db.personDao.getOrderedByTimeAsc(), date)
+        addNewTrain(t)
+        addNewPerson(p)
+    }
+
     private fun checkCanRide(routeEntity: TrainRouteEntity, personEntity: PersonEntity): Boolean {
         val route = checkDestination(routeEntity.destination, personEntity.pathDirections)
         val busy = checkIsBusy(routeEntity, personEntity.busyTime)
@@ -112,8 +119,10 @@ class UseCasesRepositoryImpl(
         return false
     }
 
-    private fun cleanTrainRouteDataAfterActualDate(trainsList: List<TrainRouteEntity>): List<TrainRouteEntity> {
-        val actualDate = GregorianCalendar().apply { time = Date() }
+    private fun cleanTrainRouteData(
+        trainsList: List<TrainRouteEntity>,
+        actualDate: GregorianCalendar
+    ): List<TrainRouteEntity> {
         trainsList.forEach { route ->
             if (route.start.get(Calendar.DAY_OF_YEAR) > actualDate.get(Calendar.DAY_OF_YEAR)) {
                 route.personId = 0
@@ -122,8 +131,10 @@ class UseCasesRepositoryImpl(
         return trainsList
     }
 
-    private fun removeBusyIntervalAfterActualDate(personsList: List<PersonEntity>): List<PersonEntity> {
-        val actualDate = GregorianCalendar().apply { time = Date() }
+    private fun cleanPersonBusyData(
+        personsList: List<PersonEntity>,
+        actualDate: GregorianCalendar
+    ): List<PersonEntity> {
         personsList.forEach { person ->
             person.busyTime.removeIf { interval ->
                 interval.start.get(Calendar.DAY_OF_YEAR) > actualDate.get(Calendar.DAY_OF_YEAR)

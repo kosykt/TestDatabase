@@ -10,20 +10,62 @@
         android:id="@+id/make_schedule_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/table_rv"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="sorting"
+        app:layout_constraintBottom_toTopOf="@id/table_persons"
+        app:layout_constraintEnd_toStartOf="@id/clean_after"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/clean_after"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="clean"
+        app:layout_constraintBottom_toTopOf="@id/table_persons"
+        app:layout_constraintEnd_toStartOf="@id/add_person"
+        app:layout_constraintStart_toEndOf="@id/make_schedule_btn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/add_person"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="person"
+        app:layout_constraintBottom_toTopOf="@id/table_persons"
+        app:layout_constraintEnd_toStartOf="@id/add_train"
+        app:layout_constraintStart_toEndOf="@id/clean_after"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/add_train"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="train"
+        app:layout_constraintBottom_toTopOf="@id/table_persons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/add_person"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/table_rv"
+        android:id="@+id/table_persons"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="300dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/table_trains"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/make_schedule_btn"
+        tools:listitem="@layout/item_table_rv" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/table_trains"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_table_rv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/make_schedule_btn" />
+        app:layout_constraintTop_toBottomOf="@id/table_persons"
+        tools:listitem="@layout/item_table_rv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

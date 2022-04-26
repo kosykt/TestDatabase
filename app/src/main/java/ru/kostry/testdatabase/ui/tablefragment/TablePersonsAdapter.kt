@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.kostry.testdatabase.data.db.persons.PersonEntity
 import ru.kostry.testdatabase.databinding.ItemTableRvBinding
 
-class TableAdapter :
-    ListAdapter<PersonEntity, TableAdapter.TableViewHolder>(ItemFsRvCallback) {
+class TablePersonsAdapter :
+    ListAdapter<PersonEntity, TablePersonsAdapter.TablePersonsViewHolder>(PersonsCallback) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TableViewHolder {
-        return TableViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TablePersonsViewHolder {
+        return TablePersonsViewHolder(
             ItemTableRvBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -21,11 +21,11 @@ class TableAdapter :
         )
     }
 
-    override fun onBindViewHolder(holder: TableViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TablePersonsViewHolder, position: Int) {
         holder.show(currentList[position])
     }
 
-    inner class TableViewHolder(private val vb: ItemTableRvBinding) :
+    inner class TablePersonsViewHolder(private val vb: ItemTableRvBinding) :
         RecyclerView.ViewHolder(vb.root) {
 
         fun show(model: PersonEntity) {
@@ -35,7 +35,7 @@ class TableAdapter :
         }
     }
 
-    companion object ItemFsRvCallback : DiffUtil.ItemCallback<PersonEntity>() {
+    companion object PersonsCallback : DiffUtil.ItemCallback<PersonEntity>() {
         override fun areItemsTheSame(oldItem: PersonEntity, newItem: PersonEntity): Boolean {
             return oldItem == newItem
         }
@@ -43,6 +43,5 @@ class TableAdapter :
         override fun areContentsTheSame(oldItem: PersonEntity, newItem: PersonEntity): Boolean {
             return oldItem == newItem
         }
-
     }
 }
