@@ -15,14 +15,8 @@ interface TrainRouteDao {
     @Delete
     suspend fun delete(trainRoute: TrainRouteEntity)
 
-    @Delete
-    suspend fun delete(trainRoute: List<TrainRouteEntity>)
-
     @Query("SELECT * FROM TrainRouteEntity")
     fun getAllToObserve(): Flow<List<TrainRouteEntity>>
-
-    @Query("SELECT * FROM TrainRouteEntity WHERE personId != 0 ORDER BY totalTimeInMillis DESC")
-    suspend fun getNotBusyOrderedByTimeDesc(): List<TrainRouteEntity>
 
     @Query("SELECT * FROM TrainRouteEntity ORDER BY totalTimeInMillis DESC")
     suspend fun getOrderedByTimeDesc(): List<TrainRouteEntity>

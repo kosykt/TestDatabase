@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.kostry.testdatabase.data.db.trains.TrainRouteEntity
 import ru.kostry.testdatabase.databinding.ItemTableRvBinding
+import ru.kostry.testdatabase.domain.models.TrainRouteDomainModel
 
 class TableTrainsAdapter :
-    ListAdapter<TrainRouteEntity, TableTrainsAdapter.TableTrainsViewHolder>(TrainsCallback) {
+    ListAdapter<TrainRouteDomainModel, TableTrainsAdapter.TableTrainsViewHolder>(TrainsCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TableTrainsViewHolder {
         return TableTrainsViewHolder(
@@ -28,24 +28,24 @@ class TableTrainsAdapter :
     inner class TableTrainsViewHolder(private val vb: ItemTableRvBinding) :
         RecyclerView.ViewHolder(vb.root) {
 
-        fun show(model: TrainRouteEntity) {
+        fun show(model: TrainRouteDomainModel) {
             vb.personId.text = model.id.toString()
             vb.personName.text = model.routeNumber
             vb.personTime.text = model.totalTimeInMillis.toString()
         }
     }
 
-    companion object TrainsCallback : DiffUtil.ItemCallback<TrainRouteEntity>() {
+    companion object TrainsCallback : DiffUtil.ItemCallback<TrainRouteDomainModel>() {
         override fun areItemsTheSame(
-            oldItem: TrainRouteEntity,
-            newItem: TrainRouteEntity,
+            oldItem: TrainRouteDomainModel,
+            newItem: TrainRouteDomainModel,
         ): Boolean {
             return oldItem == newItem
         }
 
         override fun areContentsTheSame(
-            oldItem: TrainRouteEntity,
-            newItem: TrainRouteEntity,
+            oldItem: TrainRouteDomainModel,
+            newItem: TrainRouteDomainModel,
         ): Boolean {
             return oldItem == newItem
         }

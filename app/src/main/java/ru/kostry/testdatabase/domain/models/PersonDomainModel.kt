@@ -1,14 +1,10 @@
-package ru.kostry.testdatabase.data.db.persons
+package ru.kostry.testdatabase.domain.models
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import ru.kostry.testdatabase.utils.models.PersonTimeInterval
 import java.util.*
 import java.util.stream.Collectors
 
-@Entity
-data class PersonEntity(
-    @PrimaryKey(autoGenerate = true)
+data class PersonDomainModel(
     val id: Int = 0,
     val firstName: String,
     val secondName: String,
@@ -21,12 +17,5 @@ data class PersonEntity(
         .map { it.millis }
         .collect(Collectors.toList())
         .sum()
-){
-    fun refreshWorkingMillis(){
-        workingMillis = busyTime
-            .stream()
-            .map { it.millis }
-            .collect(Collectors.toList())
-            .sum()
-    }
-}
+)
+

@@ -1,11 +1,11 @@
 package ru.kostry.testdatabase.domain
 
-import ru.kostry.testdatabase.data.db.persons.PersonEntity
+import ru.kostry.testdatabase.domain.models.PersonDomainModel
 
 class AddNewPersonUseCase(
-    private val repository: UseCasesRepository
+    private val repository: UseCasesRepository,
 ) {
-    suspend fun execute(person: PersonEntity) = repository.addNewPerson(person)
+    suspend fun execute(person: PersonDomainModel) = repository.addNewPerson(person)
 
-    suspend fun execute(persons: List<PersonEntity>) = repository.addNewPerson(persons)
+    suspend fun execute(persons: List<PersonDomainModel>) = repository.addNewPerson(persons)
 }

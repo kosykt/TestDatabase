@@ -15,6 +15,8 @@ import ru.kostry.testdatabase.data.db.persons.PersonEntity
 import ru.kostry.testdatabase.data.db.trains.TrainRouteEntity
 import ru.kostry.testdatabase.databinding.FragmentTableBinding
 import ru.kostry.testdatabase.domain.*
+import ru.kostry.testdatabase.domain.models.PersonDomainModel
+import ru.kostry.testdatabase.domain.models.TrainRouteDomainModel
 import ru.kostry.testdatabase.utils.getRandomPersons
 import ru.kostry.testdatabase.utils.getRandomRoutes
 import java.util.*
@@ -43,13 +45,13 @@ class TableFragment : Fragment() {
     }
 
     //переместить во viewModel
-    private val observablePersons: StateFlow<List<PersonEntity>> = getAllPersons.execute()
+    private val observablePersons: StateFlow<List<PersonDomainModel>> = getAllPersons.execute()
         .stateIn(
             scope = lifecycleScope,
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
-    private val observableTrains: StateFlow<List<TrainRouteEntity>> = getAllTrains.execute()
+    private val observableTrains: StateFlow<List<TrainRouteDomainModel>> = getAllTrains.execute()
         .stateIn(
             scope = lifecycleScope,
             started = SharingStarted.Eagerly,

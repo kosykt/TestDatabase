@@ -1,12 +1,12 @@
 package ru.kostry.testdatabase.domain
 
-import ru.kostry.testdatabase.data.db.trains.TrainRouteEntity
+import ru.kostry.testdatabase.domain.models.TrainRouteDomainModel
 
 class AddNewTrainRouteUseCase(
-    private val repository: UseCasesRepository
+    private val repository: UseCasesRepository,
 ) {
 
-    suspend fun execute(train: TrainRouteEntity) = repository.addNewTrain(train)
+    suspend fun execute(train: TrainRouteDomainModel) = repository.addNewTrain(train)
 
-    suspend fun execute(trains: List<TrainRouteEntity>) = repository.addNewTrain(trains)
+    suspend fun execute(trains: List<TrainRouteDomainModel>) = repository.addNewTrain(trains)
 }

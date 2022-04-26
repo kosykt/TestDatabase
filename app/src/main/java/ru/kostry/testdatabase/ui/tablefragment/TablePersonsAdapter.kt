@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.kostry.testdatabase.data.db.persons.PersonEntity
 import ru.kostry.testdatabase.databinding.ItemTableRvBinding
+import ru.kostry.testdatabase.domain.models.PersonDomainModel
 
 class TablePersonsAdapter :
-    ListAdapter<PersonEntity, TablePersonsAdapter.TablePersonsViewHolder>(PersonsCallback) {
+    ListAdapter<PersonDomainModel, TablePersonsAdapter.TablePersonsViewHolder>(PersonsCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TablePersonsViewHolder {
         return TablePersonsViewHolder(
@@ -28,19 +28,25 @@ class TablePersonsAdapter :
     inner class TablePersonsViewHolder(private val vb: ItemTableRvBinding) :
         RecyclerView.ViewHolder(vb.root) {
 
-        fun show(model: PersonEntity) {
+        fun show(model: PersonDomainModel) {
             vb.personId.text = model.id.toString()
             vb.personName.text = model.firstName
             vb.personTime.text = model.workingMillis.toString()
         }
     }
 
-    companion object PersonsCallback : DiffUtil.ItemCallback<PersonEntity>() {
-        override fun areItemsTheSame(oldItem: PersonEntity, newItem: PersonEntity): Boolean {
+    companion object PersonsCallback : DiffUtil.ItemCallback<PersonDomainModel>() {
+        override fun areItemsTheSame(
+            oldItem: PersonDomainModel,
+            newItem: PersonDomainModel,
+        ): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: PersonEntity, newItem: PersonEntity): Boolean {
+        override fun areContentsTheSame(
+            oldItem: PersonDomainModel,
+            newItem: PersonDomainModel,
+        ): Boolean {
             return oldItem == newItem
         }
     }

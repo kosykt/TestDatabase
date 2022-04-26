@@ -1,7 +1,7 @@
 package ru.kostry.testdatabase.data.db
 
 import androidx.room.TypeConverter
-import ru.kostry.testdatabase.data.db.persons.Interval
+import ru.kostry.testdatabase.utils.models.PersonTimeInterval
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.streams.toList
@@ -45,9 +45,9 @@ class DatabaseTypeConverter {
     }
 
     @TypeConverter
-    fun toInterval(text: String): Interval {
+    fun toInterval(text: String): PersonTimeInterval {
         val split = text.split("=")
-        return Interval(
+        return PersonTimeInterval(
             trainRoute = split[0],
             start = toGregorianCalendar(split[1]),
             stop = toGregorianCalendar(split[2]),
@@ -56,7 +56,7 @@ class DatabaseTypeConverter {
     }
 
     @TypeConverter
-    fun fromInterval(interval: Interval): String {
+    fun fromInterval(interval: PersonTimeInterval): String {
         val route = interval.trainRoute
         val start = fromGregorianCalendar(interval.start)
         val stop = fromGregorianCalendar(interval.stop)
@@ -65,7 +65,7 @@ class DatabaseTypeConverter {
     }
 
     @TypeConverter
-    fun toListInterval(text: String): MutableList<Interval> {
+    fun toListInterval(text: String): MutableList<PersonTimeInterval> {
         if (text.isEmpty()){
             return mutableListOf()
         }
@@ -78,7 +78,7 @@ class DatabaseTypeConverter {
     }
 
     @TypeConverter
-    fun fromListInterval(intervalList: List<Interval>): String {
+    fun fromListInterval(intervalList: List<PersonTimeInterval>): String {
         if (intervalList.isEmpty()){
             return ""
         }
